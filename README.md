@@ -63,9 +63,9 @@ The attack graph contains four node types:
 
 The main edge types are:
 
-- `P → E`: a privilege enables an exploit;
-- `E → P`: an exploit grants a new privilege;
-- `E → C`: an exploit affects a system condition;
+- `P → E`: a privilege can be obtained through an exploit;
+- `E → P`: an exploit requires a prerequisite privilege;
+- `E → C`: an exploit requires a prerequisite condition;
 - `C → D`: a condition is associated with a defense option.
 
 ## Installation
