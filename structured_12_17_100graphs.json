@@ -5,7 +5,7 @@
     "seed": 42,
     "output_dir": "comparison/batch_outputs",
     "save_result": true,
-    "result_json": "structured_12_17_10graphs.json",
+    "result_json": "structured_12_17_100graphs.json",
     "maxhs_timeout": 120,
     "population_size": 100,
     "genmax": 50,

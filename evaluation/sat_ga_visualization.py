@@ -80,9 +80,9 @@ CATEGORIES: List[Category] = [
 
 DATA_FILES = {
     ("small", "random"): "random_10_100graphs.json",
-    ("small", "structured"): "structured_12_17_10graphs.json",
+    ("small", "structured"): "structured_12_17_100graphs.json",
     ("medium", "random"): "random_100_10graphs.json",
-    ("medium", "structured"): "structured_151_199_100graphs.json",
+    ("medium", "structured"): "structured_151_199_10graphs.json",
 }
 
 
