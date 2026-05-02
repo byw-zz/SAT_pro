@@ -73,7 +73,7 @@ The main edge types are:
 ### 1. Build MaxHS
 
 ```bash
-git clone https://github.com/JSJS-JAWS/MaxHS.git
+git clone https://github.com/fbacchus/MaxHS.git
 cd MaxHS
 ./configure.sh
 make
