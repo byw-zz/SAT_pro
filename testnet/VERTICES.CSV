@@ -1,0 +1,66 @@
+1,"execCode(admin_ws,root)","OR",0
+2,"RULE 2 (remote exploit of a server program)","AND",0
+3,"netAccess(admin_ws,tcp,3389)","OR",0
+4,"RULE 5 (multi-hop access)","AND",0
+5,"hacl(db_core,admin_ws,tcp,3389)","LEAF",1
+6,"execCode(db_core,postgres)","OR",0
+7,"RULE 2 (remote exploit of a server program)","AND",0
+8,"netAccess(db_core,tcp,5432)","OR",0
+9,"RULE 5 (multi-hop access)","AND",0
+10,"hacl(api_dmz,db_core,tcp,5432)","LEAF",1
+11,"execCode(api_dmz,www)","OR",0
+12,"RULE 2 (remote exploit of a server program)","AND",0
+13,"netAccess(api_dmz,tcp,443)","OR",0
+14,"RULE 6 (direct network access)","AND",0
+15,"hacl(attacker,api_dmz,tcp,443)","LEAF",1
+16,"attackerLocated(attacker)","LEAF",1
+17,"networkServiceInfo(api_dmz,nginx,tcp,443,www)","LEAF",1
+18,"vulExists(api_dmz,'CVE-2021-41773',nginx,remoteExploit,privEscalation)","LEAF",1
+19,"RULE 5 (multi-hop access)","AND",0
+20,"hacl(web_dmz,db_core,tcp,5432)","LEAF",1
+21,"execCode(web_dmz,www)","OR",0
+22,"RULE 2 (remote exploit of a server program)","AND",0
+23,"netAccess(web_dmz,tcp,80)","OR",0
+24,"RULE 6 (direct network access)","AND",0
+25,"hacl(attacker,web_dmz,tcp,80)","LEAF",1
+26,"networkServiceInfo(web_dmz,apache,tcp,80,www)","LEAF",1
+27,"vulExists(web_dmz,'CVE-2021-44228',apache,remoteExploit,privEscalation)","LEAF",1
+28,"networkServiceInfo(db_core,postgres,tcp,5432,postgres)","LEAF",1
+29,"vulExists(db_core,'CVE-2019-9193',postgres,remoteExploit,privEscalation)","LEAF",1
+30,"RULE 5 (multi-hop access)","AND",0
+31,"hacl(edge_gw,admin_ws,tcp,3389)","LEAF",1
+32,"execCode(edge_gw,root)","OR",0
+33,"RULE 2 (remote exploit of a server program)","AND",0
+34,"netAccess(edge_gw,tcp,22)","OR",0
+35,"RULE 6 (direct network access)","AND",0
+36,"hacl(attacker,edge_gw,tcp,22)","LEAF",1
+37,"networkServiceInfo(edge_gw,openssh,tcp,22,root)","LEAF",1
+38,"vulExists(edge_gw,'CVE-2018-15473',openssh,remoteExploit,privEscalation)","LEAF",1
+39,"RULE 6 (direct network access)","AND",0
+40,"hacl(attacker,admin_ws,tcp,3389)","LEAF",1
+41,"networkServiceInfo(admin_ws,rdp,tcp,3389,root)","LEAF",1
+42,"vulExists(admin_ws,'CVE-2019-0708',rdp,remoteExploit,privEscalation)","LEAF",1
+43,"RULE 2 (remote exploit of a server program)","AND",0
+44,"netAccess(admin_ws,tcp,445)","OR",0
+45,"RULE 5 (multi-hop access)","AND",0
+46,"hacl(db_core,admin_ws,tcp,445)","LEAF",1
+47,"RULE 5 (multi-hop access)","AND",0
+48,"hacl(edge_gw,admin_ws,tcp,445)","LEAF",1
+49,"RULE 5 (multi-hop access)","AND",0
+50,"hacl(file_srv,admin_ws,tcp,445)","LEAF",1
+51,"execCode(file_srv,root)","OR",0
+52,"RULE 2 (remote exploit of a server program)","AND",0
+53,"netAccess(file_srv,tcp,445)","OR",0
+54,"RULE 5 (multi-hop access)","AND",0
+55,"hacl(mail_dmz,file_srv,tcp,445)","LEAF",1
+56,"execCode(mail_dmz,root)","OR",0
+57,"RULE 2 (remote exploit of a server program)","AND",0
+58,"netAccess(mail_dmz,tcp,25)","OR",0
+59,"RULE 6 (direct network access)","AND",0
+60,"hacl(attacker,mail_dmz,tcp,25)","LEAF",1
+61,"networkServiceInfo(mail_dmz,postfix,tcp,25,root)","LEAF",1
+62,"vulExists(mail_dmz,'CVE-2020-8617',postfix,remoteExploit,privEscalation)","LEAF",1
+63,"networkServiceInfo(file_srv,samba,tcp,445,root)","LEAF",1
+64,"vulExists(file_srv,'CVE-2017-7494',samba,remoteExploit,privEscalation)","LEAF",1
+65,"networkServiceInfo(admin_ws,samba,tcp,445,root)","LEAF",1
+66,"vulExists(admin_ws,'CVE-2020-0796',samba,remoteExploit,privEscalation)","LEAF",1

@@ -1,0 +1,2173 @@
+{
+  "args": {
+    "graph_type": "structured",
+    "num_graphs": 10,
+    "seed": 42,
+    "output_dir": "batch_compare_outputs",
+    "save_result": true,
+    "result_json": "structured_151_199_10graphs.json",
+    "maxhs_timeout": 120,
+    "population_size": 100,
+    "genmax": 50,
+    "bp_max_iters": 100,
+    "bp_damping": 0.2,
+    "bp_tol": 1e-06,
+    "top_n": 10,
+    "nP_min": 151,
+    "nP_max": 199,
+    "no_level_scaling": false,
+    "p_alpha_max": 0.8,
+    "cd_beta_max": 0.5,
+    "cd_floor": 0.2,
+    "max_extra_p_out_per_node": 2,
+    "nP": null,
+    "nE": null,
+    "nC": null,
+    "nD": null,
+    "max_children": 5,
+    "p_ep": 0.25
+  },
+  "summary": {
+    "num_graphs": 10,
+    "num_same_strategy": 2,
+    "num_different_strategy": 8,
+    "num_ga_better": 1,
+    "num_sat_better": 7,
+    "num_tie": 2,
+    "num_timeout": 0,
+    "avg_bp_time_s": 7123.79807164669,
+    "avg_maxsat_time_s": 0.03772845268249512,
+    "ga_better_cases": [
+      {
+        "graph_id": 4,
+        "ga_objective": 4811.024577546733,
+        "sat_objective": 4777.609371183205,
+        "sat_rank_in_ga_all": null,
+        "sat_rank_in_ga_top_n": null,
+        "ga_defended": [
+          "D11",
+          "D3",
+          "D36",
+          "D38",
+          "D52",
+          "D58",
+          "D61",
+          "D62",
+          "D71"
+        ],
+        "sat_defended": [
+          "D11",
+          "D15",
+          "D16",
+          "D17",
+          "D36",
+          "D38",
+          "D58",
+          "D61",
+          "D62",
+          "D71"
+        ]
+      }
+    ]
+  },
+  "results": [
+    {
+      "graph_id": 1,
+      "graph_stats": {
+        "nP": 191,
+        "nE": 559,
+        "nC": 231,
+        "nD": 77,
+        "total": 1058,
+        "edges": 2493
+      },
+      "bp_time_s": 8856.24612402916,
+      "bp_evaluated": 3455,
+      "bp_objective": 4285.908968601278,
+      "bp_defended": [
+        "D13",
+        "D29",
+        "D30",
+        "D34",
+        "D60",
+        "D9"
+      ],
+      "bp_defended_count": 6,
+      "maxsat_time_s": 0.03182411193847656,
+      "maxsat_timeout": false,
+      "maxsat_objective": 4526.93153040655,
+      "maxsat_defended": [
+        "D29",
+        "D3",
+        "D30",
+        "D34",
+        "D50"
+      ],
+      "maxsat_defended_count": 5,
+      "strategies_same": false,
+      "strategies_different": true,
+      "winner": "MaxSAT",
+      "objective_diff_ga_minus_sat": -241.02256180527274,
+      "ga_top_n": [
+        {
+          "rank": 1,
+          "objective": 4285.908968601278,
+          "defended": [
+            "D13",
+            "D29",
+            "D30",
+            "D34",
+            "D60",
+            "D9"
+          ],
+          "C_benefit": 4969.0,
+          "P_expected_loss": 0.09103139872198897,
+          "D_cost": 683.0
+        },
+        {
+          "rank": 2,
+          "objective": 4267.9264707873135,
+          "defended": [
+            "D13",
+            "D29",
+            "D34",
+            "D60",
+            "D66",
+            "D9"
+          ],
+          "C_benefit": 4953.0,
+          "P_expected_loss": 0.07352921268659546,
+          "D_cost": 685.0
+        },
+        {
+          "rank": 3,
+          "objective": 4262.9757158437515,
+          "defended": [
+            "D11",
+            "D13",
+            "D29",
+            "D30",
+            "D60",
+            "D9"
+          ],
+          "C_benefit": 4946.0,
+          "P_expected_loss": 0.024284156248736536,
+          "D_cost": 683.0
+        },
+        {
+          "rank": 4,
+          "objective": 4262.933069676713,
+          "defended": [
+            "D13",
+            "D26",
+            "D29",
+            "D30",
+            "D60",
+            "D9"
+          ],
+          "C_benefit": 4952.0,
+          "P_expected_loss": 0.06693032328737289,
+          "D_cost": 689.0
+        },
+        {
+          "rank": 5,
+          "objective": 4244.977951165631,
+          "defended": [
+            "D11",
+            "D13",
+            "D29",
+            "D60",
+            "D66",
+            "D9"
+          ],
+          "C_benefit": 4930.0,
+          "P_expected_loss": 0.022048834369194727,
+          "D_cost": 685.0
+        },
+        {
+          "rank": 6,
+          "objective": 4244.938008081728,
+          "defended": [
+            "D13",
+            "D26",
+            "D29",
+            "D60",
+            "D66",
+            "D9"
+          ],
+          "C_benefit": 4936.0,
+          "P_expected_loss": 0.061991918271544266,
+          "D_cost": 691.0
+        },
+        {
+          "rank": 7,
+          "objective": 4163.982557389503,
+          "defended": [
+            "D13",
+            "D29",
+            "D30",
+            "D34",
+            "D60",
+            "D76",
+            "D9"
+          ],
+          "C_benefit": 4923.0,
+          "P_expected_loss": 0.017442610496740507,
+          "D_cost": 759.0
+        },
+        {
+          "rank": 8,
+          "objective": 4145.983456524453,
+          "defended": [
+            "D13",
+            "D29",
+            "D34",
+            "D60",
+            "D66",
+            "D76",
+            "D9"
+          ],
+          "C_benefit": 4907.0,
+          "P_expected_loss": 0.0165434755473509,
+          "D_cost": 761.0
+        },
+        {
+          "rank": 9,
+          "objective": 4145.931620019283,
+          "defended": [
+            "D13",
+            "D29",
+            "D30",
+            "D34",
+            "D60",
+            "D70",
+            "D9"
+          ],
+          "C_benefit": 4905.0,
+          "P_expected_loss": 0.06837998071680845,
+          "D_cost": 759.0
+        },
+        {
+          "rank": 10,
+          "objective": 4140.99374802613,
+          "defended": [
+            "D11",
+            "D13",
+            "D29",
+            "D30",
+            "D60",
+            "D76",
+            "D9"
+          ],
+          "C_benefit": 4900.0,
+          "P_expected_loss": 0.00625197387060952,
+          "D_cost": 759.0
+        }
+      ],
+      "maxsat_rank_in_ga_top_n": null,
+      "maxsat_rank_in_ga_all": null
+    },
+    {
+      "graph_id": 2,
+      "graph_stats": {
+        "nP": 158,
+        "nE": 461,
+        "nC": 186,
+        "nD": 62,
+        "total": 867,
+        "edges": 2025
+      },
+      "bp_time_s": 6349.756062746048,
+      "bp_evaluated": 3203,
+      "bp_objective": 2071.9954785465384,
+      "bp_defended": [
+        "D12",
+        "D24",
+        "D3",
+        "D35",
+        "D41",
+        "D43",
+        "D54",
+        "D58",
+        "D6"
+      ],
+      "bp_defended_count": 9,
+      "maxsat_time_s": 0.023772001266479492,
+      "maxsat_timeout": false,
+      "maxsat_objective": 2117.9917035965295,
+      "maxsat_defended": [
+        "D12",
+        "D23",
+        "D24",
+        "D31",
+        "D41",
+        "D43",
+        "D47",
+        "D54",
+        "D6"
+      ],
+      "maxsat_defended_count": 9,
+      "strategies_same": false,
+      "strategies_different": true,
+      "winner": "MaxSAT",
+      "objective_diff_ga_minus_sat": -45.99622504999115,
+      "ga_top_n": [
+        {
+          "rank": 1,
+          "objective": 2071.9954785465384,
+          "defended": [
+            "D12",
+            "D24",
+            "D3",
+            "D35",
+            "D41",
+            "D43",
+            "D54",
+            "D58",
+            "D6"
+          ],
+          "C_benefit": 2749.0,
+          "P_expected_loss": 0.004521453461724435,
+          "D_cost": 677.0
+        },
+        {
+          "rank": 2,
+          "objective": 2061.9956993225856,
+          "defended": [
+            "D12",
+            "D24",
+            "D3",
+            "D35",
+            "D41",
+            "D46",
+            "D54",
+            "D58",
+            "D6"
+          ],
+          "C_benefit": 2741.0,
+          "P_expected_loss": 0.004300677414257351,
+          "D_cost": 679.0
+        },
+        {
+          "rank": 3,
+          "objective": 2043.7581638614197,
+          "defended": [
+            "D12",
+            "D3",
+            "D35",
+            "D41",
+            "D43",
+            "D48",
+            "D54",
+            "D58",
+            "D6"
+          ],
+          "C_benefit": 2770.0,
+          "P_expected_loss": 48.241836138580126,
+          "D_cost": 678.0
+        },
+        {
+          "rank": 4,
+          "objective": 2036.4366364284474,
+          "defended": [
+            "D12",
+            "D3",
+            "D35",
+            "D41",
+            "D46",
+            "D48",
+            "D54",
+            "D58",
+            "D6"
+          ],
+          "C_benefit": 2762.0,
+          "P_expected_loss": 45.56336357155271,
+          "D_cost": 680.0
+        },
+        {
+          "rank": 5,
+          "objective": 1987.6081329794993,
+          "defended": [
+            "D12",
+            "D3",
+            "D35",
+            "D41",
+            "D46",
+            "D51",
+            "D54",
+            "D58",
+            "D6"
+          ],
+          "C_benefit": 2745.0,
+          "P_expected_loss": 68.39186702050075,
+          "D_cost": 689.0
+        },
+        {
+          "rank": 6,
+          "objective": 1979.0749287100448,
+          "defended": [
+            "D12",
+            "D3",
+            "D35",
+            "D41",
+            "D46",
+            "D54",
+            "D58",
+            "D6"
+          ],
+          "C_benefit": 2803.0,
+          "P_expected_loss": 219.92507128995516,
+          "D_cost": 604.0
+        },
+        {
+          "rank": 7,
+          "objective": 1960.996784478708,
+          "defended": [
+            "D12",
+            "D24",
+            "D3",
+            "D35",
+            "D41",
+            "D43",
+            "D54",
+            "D58",
+            "D6",
+            "D9"
+          ],
+          "C_benefit": 2713.0,
+          "P_expected_loss": 0.0032155212919879675,
+          "D_cost": 752.0
+        },
+        {
+          "rank": 8,
+          "objective": 1960.9959099445337,
+          "defended": [
+            "D12",
+            "D14",
+            "D24",
+            "D3",
+            "D35",
+            "D41",
+            "D43",
+            "D54",
+            "D58",
+            "D6"
+          ],
+          "C_benefit": 2705.0,
+          "P_expected_loss": 0.004090055466172795,
+          "D_cost": 744.0
+        },
+        {
+          "rank": 9,
+          "objective": 1957.9958732526698,
+          "defended": [
+            "D12",
+            "D24",
+            "D3",
+            "D31",
+            "D35",
+            "D41",
+            "D43",
+            "D54",
+            "D58",
+            "D6"
+          ],
+          "C_benefit": 2702.0,
+          "P_expected_loss": 0.00412674733046569,
+          "D_cost": 744.0
+        },
+        {
+          "rank": 10,
+          "objective": 1956.9979787415095,
+          "defended": [
+            "D12",
+            "D17",
+            "D24",
+            "D3",
+            "D35",
+            "D41",
+            "D43",
+            "D54",
+            "D58",
+            "D6"
+          ],
+          "C_benefit": 2699.0,
+          "P_expected_loss": 0.0020212584902381844,
+          "D_cost": 742.0
+        }
+      ],
+      "maxsat_rank_in_ga_top_n": null,
+      "maxsat_rank_in_ga_all": null
+    },
+    {
+      "graph_id": 3,
+      "graph_stats": {
+        "nP": 152,
+        "nE": 445,
+        "nC": 187,
+        "nD": 63,
+        "total": 847,
+        "edges": 1999
+      },
+      "bp_time_s": 5903.45419716835,
+      "bp_evaluated": 2990,
+      "bp_objective": 2554.987444722713,
+      "bp_defended": [
+        "D15",
+        "D19",
+        "D29",
+        "D37",
+        "D55",
+        "D57"
+      ],
+      "bp_defended_count": 6,
+      "maxsat_time_s": 0.029505252838134766,
+      "maxsat_timeout": false,
+      "maxsat_objective": 2734.8263863656152,
+      "maxsat_defended": [
+        "D15",
+        "D25",
+        "D29",
+        "D55",
+        "D57"
+      ],
+      "maxsat_defended_count": 5,
+      "strategies_same": false,
+      "strategies_different": true,
+      "winner": "MaxSAT",
+      "objective_diff_ga_minus_sat": -179.83894164290223,
+      "ga_top_n": [
+        {
+          "rank": 1,
+          "objective": 2554.987444722713,
+          "defended": [
+            "D15",
+            "D19",
+            "D29",
+            "D37",
+            "D55",
+            "D57"
+          ],
+          "C_benefit": 3139.0,
+          "P_expected_loss": 0.012555277287178814,
+          "D_cost": 584.0
+        },
+        {
+          "rank": 2,
+          "objective": 2518.9741557259663,
+          "defended": [
+            "D15",
+            "D19",
+            "D29",
+            "D37",
+            "D46",
+            "D57"
+          ],
+          "C_benefit": 3103.0,
+          "P_expected_loss": 0.025844274033717828,
+          "D_cost": 584.0
+        },
+        {
+          "rank": 3,
+          "objective": 2470.996337504509,
+          "defended": [
+            "D15",
+            "D19",
+            "D29",
+            "D34",
+            "D37",
+            "D55",
+            "D57"
+          ],
+          "C_benefit": 3119.0,
+          "P_expected_loss": 0.0036624954907728885,
+          "D_cost": 648.0
+        },
+        {
+          "rank": 4,
+          "objective": 2458.998064212101,
+          "defended": [
+            "D0",
+            "D15",
+            "D19",
+            "D29",
+            "D37",
+            "D55",
+            "D57"
+          ],
+          "C_benefit": 3116.0,
+          "P_expected_loss": 0.0019357878993320663,
+          "D_cost": 657.0
+        },
+        {
+          "rank": 5,
+          "objective": 2448.990296832242,
+          "defended": [
+            "D15",
+            "D19",
+            "D29",
+            "D37",
+            "D45",
+            "D55",
+            "D57"
+          ],
+          "C_benefit": 3106.0,
+          "P_expected_loss": 0.009703167757770805,
+          "D_cost": 657.0
+        },
+        {
+          "rank": 6,
+          "objective": 2440.993612226914,
+          "defended": [
+            "D15",
+            "D19",
+            "D25",
+            "D29",
+            "D37",
+            "D55",
+            "D57"
+          ],
+          "C_benefit": 3098.0,
+          "P_expected_loss": 0.006387773085765422,
+          "D_cost": 657.0
+        },
+        {
+          "rank": 7,
+          "objective": 2440.2421111002195,
+          "defended": [
+            "D15",
+            "D19",
+            "D29",
+            "D37",
+            "D38",
+            "D55"
+          ],
+          "C_benefit": 3150.0,
+          "P_expected_loss": 151.7578888997806,
+          "D_cost": 558.0
+        },
+        {
+          "rank": 8,
+          "objective": 2434.987135513377,
+          "defended": [
+            "D15",
+            "D19",
+            "D29",
+            "D34",
+            "D37",
+            "D46",
+            "D57"
+          ],
+          "C_benefit": 3083.0,
+          "P_expected_loss": 0.0128644866232271,
+          "D_cost": 648.0
+        },
+        {
+          "rank": 9,
+          "objective": 2423.997214108954,
+          "defended": [
+            "D15",
+            "D19",
+            "D29",
+            "D36",
+            "D37",
+            "D55",
+            "D57"
+          ],
+          "C_benefit": 3072.0,
+          "P_expected_loss": 0.002785891046146977,
+          "D_cost": 648.0
+        },
+        {
+          "rank": 10,
+          "objective": 2422.9927311696715,
+          "defended": [
+            "D0",
+            "D15",
+            "D19",
+            "D29",
+            "D37",
+            "D46",
+            "D57"
+          ],
+          "C_benefit": 3080.0,
+          "P_expected_loss": 0.007268830328364726,
+          "D_cost": 657.0
+        }
+      ],
+      "maxsat_rank_in_ga_top_n": null,
+      "maxsat_rank_in_ga_all": null
+    },
+    {
+      "graph_id": 4,
+      "graph_stats": {
+        "nP": 198,
+        "nE": 586,
+        "nC": 240,
+        "nD": 80,
+        "total": 1104,
+        "edges": 2602
+      },
+      "bp_time_s": 9798.97840976715,
+      "bp_evaluated": 3815,
+      "bp_objective": 4811.024577546733,
+      "bp_defended": [
+        "D11",
+        "D3",
+        "D36",
+        "D38",
+        "D52",
+        "D58",
+        "D61",
+        "D62",
+        "D71"
+      ],
+      "bp_defended_count": 9,
+      "maxsat_time_s": 0.062491416931152344,
+      "maxsat_timeout": false,
+      "maxsat_objective": 4777.609371183205,
+      "maxsat_defended": [
+        "D11",
+        "D15",
+        "D16",
+        "D17",
+        "D36",
+        "D38",
+        "D58",
+        "D61",
+        "D62",
+        "D71"
+      ],
+      "maxsat_defended_count": 10,
+      "strategies_same": false,
+      "strategies_different": true,
+      "winner": "GA",
+      "objective_diff_ga_minus_sat": 33.41520636352743,
+      "ga_top_n": [
+        {
+          "rank": 1,
+          "objective": 4811.024577546733,
+          "defended": [
+            "D11",
+            "D3",
+            "D36",
+            "D38",
+            "D52",
+            "D58",
+            "D61",
+            "D62",
+            "D71"
+          ],
+          "C_benefit": 5593.0,
+          "P_expected_loss": 172.97542245326676,
+          "D_cost": 609.0
+        },
+        {
+          "rank": 2,
+          "objective": 4802.19380683327,
+          "defended": [
+            "D11",
+            "D3",
+            "D36",
+            "D38",
+            "D52",
+            "D54",
+            "D61",
+            "D62",
+            "D71"
+          ],
+          "C_benefit": 5590.0,
+          "P_expected_loss": 174.8061931667294,
+          "D_cost": 613.0
+        },
+        {
+          "rank": 3,
+          "objective": 4783.8748717945555,
+          "defended": [
+            "D1",
+            "D11",
+            "D3",
+            "D38",
+            "D52",
+            "D58",
+            "D61",
+            "D62",
+            "D71"
+          ],
+          "C_benefit": 5561.0,
+          "P_expected_loss": 165.12512820544416,
+          "D_cost": 612.0
+        },
+        {
+          "rank": 4,
+          "objective": 4777.022801643697,
+          "defended": [
+            "D1",
+            "D11",
+            "D3",
+            "D38",
+            "D52",
+            "D54",
+            "D61",
+            "D62",
+            "D71"
+          ],
+          "C_benefit": 5558.0,
+          "P_expected_loss": 164.97719835630326,
+          "D_cost": 616.0
+        },
+        {
+          "rank": 5,
+          "objective": 4759.882196498092,
+          "defended": [
+            "D11",
+            "D14",
+            "D3",
+            "D38",
+            "D52",
+            "D58",
+            "D61",
+            "D62",
+            "D71"
+          ],
+          "C_benefit": 5601.0,
+          "P_expected_loss": 169.11780350190867,
+          "D_cost": 672.0
+        },
+        {
+          "rank": 6,
+          "objective": 4750.364960388593,
+          "defended": [
+            "D11",
+            "D14",
+            "D3",
+            "D38",
+            "D52",
+            "D54",
+            "D61",
+            "D62",
+            "D71"
+          ],
+          "C_benefit": 5598.0,
+          "P_expected_loss": 171.63503961140654,
+          "D_cost": 676.0
+        },
+        {
+          "rank": 7,
+          "objective": 4743.906323785404,
+          "defended": [
+            "D1",
+            "D11",
+            "D2",
+            "D3",
+            "D38",
+            "D52",
+            "D58",
+            "D61",
+            "D62",
+            "D71"
+          ],
+          "C_benefit": 5498.0,
+          "P_expected_loss": 75.09367621459523,
+          "D_cost": 679.0
+        },
+        {
+          "rank": 8,
+          "objective": 4735.978108784883,
+          "defended": [
+            "D1",
+            "D11",
+            "D2",
+            "D3",
+            "D38",
+            "D52",
+            "D54",
+            "D61",
+            "D62",
+            "D71"
+          ],
+          "C_benefit": 5495.0,
+          "P_expected_loss": 76.02189121511711,
+          "D_cost": 683.0
+        },
+        {
+          "rank": 9,
+          "objective": 4735.875895190685,
+          "defended": [
+            "D1",
+            "D11",
+            "D3",
+            "D33",
+            "D38",
+            "D52",
+            "D58",
+            "D62",
+            "D71"
+          ],
+          "C_benefit": 5557.0,
+          "P_expected_loss": 210.12410480931493,
+          "D_cost": 611.0
+        },
+        {
+          "rank": 10,
+          "objective": 4723.5842345064975,
+          "defended": [
+            "D11",
+            "D3",
+            "D36",
+            "D38",
+            "D42",
+            "D52",
+            "D58",
+            "D61",
+            "D62",
+            "D71"
+          ],
+          "C_benefit": 5505.0,
+          "P_expected_loss": 105.41576549350268,
+          "D_cost": 676.0
+        }
+      ],
+      "maxsat_rank_in_ga_top_n": null,
+      "maxsat_rank_in_ga_all": null
+    },
+    {
+      "graph_id": 5,
+      "graph_stats": {
+        "nP": 168,
+        "nE": 490,
+        "nC": 201,
+        "nD": 67,
+        "total": 926,
+        "edges": 2173
+      },
+      "bp_time_s": 6710.265406370163,
+      "bp_evaluated": 3009,
+      "bp_objective": 3604.8327561755596,
+      "bp_defended": [
+        "D20",
+        "D23",
+        "D25",
+        "D35",
+        "D5",
+        "D58",
+        "D60"
+      ],
+      "bp_defended_count": 7,
+      "maxsat_time_s": 0.047922372817993164,
+      "maxsat_timeout": false,
+      "maxsat_objective": 3619.9785389861217,
+      "maxsat_defended": [
+        "D20",
+        "D23",
+        "D25",
+        "D28",
+        "D5",
+        "D58",
+        "D60",
+        "D66"
+      ],
+      "maxsat_defended_count": 8,
+      "strategies_same": false,
+      "strategies_different": true,
+      "winner": "MaxSAT",
+      "objective_diff_ga_minus_sat": -15.145782810562196,
+      "ga_top_n": [
+        {
+          "rank": 1,
+          "objective": 3604.8327561755596,
+          "defended": [
+            "D20",
+            "D23",
+            "D25",
+            "D35",
+            "D5",
+            "D58",
+            "D60"
+          ],
+          "C_benefit": 4389.0,
+          "P_expected_loss": 179.1672438244401,
+          "D_cost": 605.0
+        },
+        {
+          "rank": 2,
+          "objective": 3599.8487017842062,
+          "defended": [
+            "D20",
+            "D23",
+            "D25",
+            "D35",
+            "D58",
+            "D6",
+            "D60"
+          ],
+          "C_benefit": 4384.0,
+          "P_expected_loss": 179.1512982157937,
+          "D_cost": 605.0
+        },
+        {
+          "rank": 3,
+          "objective": 3597.6200543476625,
+          "defended": [
+            "D20",
+            "D23",
+            "D25",
+            "D29",
+            "D35",
+            "D5",
+            "D58"
+          ],
+          "C_benefit": 4379.0,
+          "P_expected_loss": 176.3799456523379,
+          "D_cost": 605.0
+        },
+        {
+          "rank": 4,
+          "objective": 3594.9824116629898,
+          "defended": [
+            "D20",
+            "D23",
+            "D25",
+            "D35",
+            "D5",
+            "D58",
+            "D60",
+            "D66"
+          ],
+          "C_benefit": 4314.0,
+          "P_expected_loss": 0.017588337009965312,
+          "D_cost": 719.0
+        },
+        {
+          "rank": 5,
+          "objective": 3592.759581695108,
+          "defended": [
+            "D20",
+            "D23",
+            "D25",
+            "D29",
+            "D35",
+            "D58",
+            "D6"
+          ],
+          "C_benefit": 4374.0,
+          "P_expected_loss": 176.24041830489207,
+          "D_cost": 605.0
+        },
+        {
+          "rank": 6,
+          "objective": 3589.9896686661195,
+          "defended": [
+            "D20",
+            "D23",
+            "D25",
+            "D35",
+            "D58",
+            "D6",
+            "D60",
+            "D66"
+          ],
+          "C_benefit": 4309.0,
+          "P_expected_loss": 0.010331333880490068,
+          "D_cost": 719.0
+        },
+        {
+          "rank": 7,
+          "objective": 3584.935167546031,
+          "defended": [
+            "D20",
+            "D23",
+            "D25",
+            "D29",
+            "D35",
+            "D5",
+            "D58",
+            "D66"
+          ],
+          "C_benefit": 4304.0,
+          "P_expected_loss": 0.06483245396899985,
+          "D_cost": 719.0
+        },
+        {
+          "rank": 8,
+          "objective": 3579.993105016423,
+          "defended": [
+            "D20",
+            "D23",
+            "D25",
+            "D29",
+            "D35",
+            "D58",
+            "D6",
+            "D66"
+          ],
+          "C_benefit": 4299.0,
+          "P_expected_loss": 0.006894983577167383,
+          "D_cost": 719.0
+        },
+        {
+          "rank": 9,
+          "objective": 3563.852688288609,
+          "defended": [
+            "D15",
+            "D20",
+            "D23",
+            "D25",
+            "D35",
+            "D5",
+            "D58",
+            "D60"
+          ],
+          "C_benefit": 4328.0,
+          "P_expected_loss": 84.147311711391,
+          "D_cost": 680.0
+        },
+        {
+          "rank": 10,
+          "objective": 3558.85574211323,
+          "defended": [
+            "D15",
+            "D20",
+            "D23",
+            "D25",
+            "D35",
+            "D58",
+            "D6",
+            "D60"
+          ],
+          "C_benefit": 4323.0,
+          "P_expected_loss": 84.14425788676967,
+          "D_cost": 680.0
+        }
+      ],
+      "maxsat_rank_in_ga_top_n": null,
+      "maxsat_rank_in_ga_all": null
+    },
+    {
+      "graph_id": 6,
+      "graph_stats": {
+        "nP": 166,
+        "nE": 487,
+        "nC": 205,
+        "nD": 69,
+        "total": 927,
+        "edges": 2193
+      },
+      "bp_time_s": 6896.085202217102,
+      "bp_evaluated": 3588,
+      "bp_objective": 4267.995399530255,
+      "bp_defended": [
+        "D20",
+        "D27",
+        "D37",
+        "D56",
+        "D60",
+        "D64"
+      ],
+      "bp_defended_count": 6,
+      "maxsat_time_s": 0.020386934280395508,
+      "maxsat_timeout": false,
+      "maxsat_objective": 4267.995399530255,
+      "maxsat_defended": [
+        "D20",
+        "D27",
+        "D37",
+        "D56",
+        "D60",
+        "D64"
+      ],
+      "maxsat_defended_count": 6,
+      "strategies_same": true,
+      "strategies_different": false,
+      "winner": "TIE",
+      "objective_diff_ga_minus_sat": 0.0,
+      "ga_top_n": [
+        {
+          "rank": 1,
+          "objective": 4267.995399530255,
+          "defended": [
+            "D20",
+            "D27",
+            "D37",
+            "D56",
+            "D60",
+            "D64"
+          ],
+          "C_benefit": 4759.0,
+          "P_expected_loss": 0.004600469744864567,
+          "D_cost": 491.0
+        },
+        {
+          "rank": 2,
+          "objective": 4247.99532610929,
+          "defended": [
+            "D21",
+            "D27",
+            "D37",
+            "D56",
+            "D60",
+            "D64"
+          ],
+          "C_benefit": 4739.0,
+          "P_expected_loss": 0.00467389071074861,
+          "D_cost": 491.0
+        },
+        {
+          "rank": 3,
+          "objective": 4235.997167818534,
+          "defended": [
+            "D20",
+            "D27",
+            "D37",
+            "D39",
+            "D60",
+            "D64"
+          ],
+          "C_benefit": 4769.0,
+          "P_expected_loss": 0.002832181466435327,
+          "D_cost": 533.0
+        },
+        {
+          "rank": 4,
+          "objective": 4215.997555369317,
+          "defended": [
+            "D21",
+            "D27",
+            "D37",
+            "D39",
+            "D60",
+            "D64"
+          ],
+          "C_benefit": 4749.0,
+          "P_expected_loss": 0.0024446306837403713,
+          "D_cost": 533.0
+        },
+        {
+          "rank": 5,
+          "objective": 4123.996078984824,
+          "defended": [
+            "D20",
+            "D27",
+            "D3",
+            "D37",
+            "D56",
+            "D60",
+            "D64"
+          ],
+          "C_benefit": 4701.0,
+          "P_expected_loss": 0.003921015176614048,
+          "D_cost": 577.0
+        },
+        {
+          "rank": 6,
+          "objective": 4123.995782414009,
+          "defended": [
+            "D10",
+            "D20",
+            "D27",
+            "D37",
+            "D56",
+            "D60",
+            "D64"
+          ],
+          "C_benefit": 4692.0,
+          "P_expected_loss": 0.004217585990747513,
+          "D_cost": 568.0
+        },
+        {
+          "rank": 7,
+          "objective": 4119.996143860453,
+          "defended": [
+            "D2",
+            "D20",
+            "D27",
+            "D37",
+            "D56",
+            "D60",
+            "D64"
+          ],
+          "C_benefit": 4683.0,
+          "P_expected_loss": 0.003856139546498403,
+          "D_cost": 563.0
+        },
+        {
+          "rank": 8,
+          "objective": 4118.99671370388,
+          "defended": [
+            "D20",
+            "D27",
+            "D37",
+            "D47",
+            "D56",
+            "D60",
+            "D64"
+          ],
+          "C_benefit": 4691.0,
+          "P_expected_loss": 0.0032862961202211206,
+          "D_cost": 572.0
+        },
+        {
+          "rank": 9,
+          "objective": 4115.995317570152,
+          "defended": [
+            "D20",
+            "D21",
+            "D27",
+            "D37",
+            "D56",
+            "D60",
+            "D64"
+          ],
+          "C_benefit": 4683.0,
+          "P_expected_loss": 0.004682429847837587,
+          "D_cost": 567.0
+        },
+        {
+          "rank": 10,
+          "objective": 4112.997387077403,
+          "defended": [
+            "D20",
+            "D27",
+            "D37",
+            "D40",
+            "D56",
+            "D60",
+            "D64"
+          ],
+          "C_benefit": 4690.0,
+          "P_expected_loss": 0.0026129225971439993,
+          "D_cost": 577.0
+        }
+      ],
+      "maxsat_rank_in_ga_top_n": 1,
+      "maxsat_rank_in_ga_all": 1
+    },
+    {
+      "graph_id": 7,
+      "graph_stats": {
+        "nP": 165,
+        "nE": 478,
+        "nC": 193,
+        "nD": 65,
+        "total": 901,
+        "edges": 2102
+      },
+      "bp_time_s": 6098.594295024872,
+      "bp_evaluated": 3051,
+      "bp_objective": 3136.789835923282,
+      "bp_defended": [
+        "D13",
+        "D33",
+        "D34",
+        "D53",
+        "D59"
+      ],
+      "bp_defended_count": 5,
+      "maxsat_time_s": 0.06071352958679199,
+      "maxsat_timeout": false,
+      "maxsat_objective": 3136.789835923282,
+      "maxsat_defended": [
+        "D13",
+        "D33",
+        "D34",
+        "D53",
+        "D59"
+      ],
+      "maxsat_defended_count": 5,
+      "strategies_same": true,
+      "strategies_different": false,
+      "winner": "TIE",
+      "objective_diff_ga_minus_sat": 0.0,
+      "ga_top_n": [
+        {
+          "rank": 1,
+          "objective": 3136.789835923282,
+          "defended": [
+            "D13",
+            "D33",
+            "D34",
+            "D53",
+            "D59"
+          ],
+          "C_benefit": 3625.0,
+          "P_expected_loss": 0.21016407671779821,
+          "D_cost": 488.0
+        },
+        {
+          "rank": 2,
+          "objective": 3134.8675098939284,
+          "defended": [
+            "D13",
+            "D30",
+            "D33",
+            "D34",
+            "D59"
+          ],
+          "C_benefit": 3645.0,
+          "P_expected_loss": 0.13249010607137518,
+          "D_cost": 510.0
+        },
+        {
+          "rank": 3,
+          "objective": 3034.964444848737,
+          "defended": [
+            "D13",
+            "D31",
+            "D33",
+            "D34",
+            "D53",
+            "D59"
+          ],
+          "C_benefit": 3597.0,
+          "P_expected_loss": 0.03555515126303536,
+          "D_cost": 562.0
+        },
+        {
+          "rank": 4,
+          "objective": 3032.969662586839,
+          "defended": [
+            "D13",
+            "D30",
+            "D31",
+            "D33",
+            "D34",
+            "D59"
+          ],
+          "C_benefit": 3617.0,
+          "P_expected_loss": 0.030337413161057297,
+          "D_cost": 584.0
+        },
+        {
+          "rank": 5,
+          "objective": 3024.907834218959,
+          "defended": [
+            "D13",
+            "D33",
+            "D34",
+            "D53",
+            "D59",
+            "D7"
+          ],
+          "C_benefit": 3587.0,
+          "P_expected_loss": 0.09216578104072827,
+          "D_cost": 562.0
+        },
+        {
+          "rank": 6,
+          "objective": 3022.950156222931,
+          "defended": [
+            "D13",
+            "D30",
+            "D33",
+            "D34",
+            "D59",
+            "D7"
+          ],
+          "C_benefit": 3607.0,
+          "P_expected_loss": 0.049843777068865,
+          "D_cost": 584.0
+        },
+        {
+          "rank": 7,
+          "objective": 3020.877213983645,
+          "defended": [
+            "D13",
+            "D26",
+            "D33",
+            "D34",
+            "D53",
+            "D59"
+          ],
+          "C_benefit": 3583.0,
+          "P_expected_loss": 0.12278601635507787,
+          "D_cost": 562.0
+        },
+        {
+          "rank": 8,
+          "objective": 3019.8463153818575,
+          "defended": [
+            "D13",
+            "D29",
+            "D33",
+            "D34",
+            "D53",
+            "D59"
+          ],
+          "C_benefit": 3574.0,
+          "P_expected_loss": 0.1536846181424783,
+          "D_cost": 554.0
+        },
+        {
+          "rank": 9,
+          "objective": 3018.9153483090845,
+          "defended": [
+            "D13",
+            "D26",
+            "D30",
+            "D33",
+            "D34",
+            "D59"
+          ],
+          "C_benefit": 3603.0,
+          "P_expected_loss": 0.08465169091550366,
+          "D_cost": 584.0
+        },
+        {
+          "rank": 10,
+          "objective": 3017.8894162140396,
+          "defended": [
+            "D13",
+            "D29",
+            "D30",
+            "D33",
+            "D34",
+            "D59"
+          ],
+          "C_benefit": 3594.0,
+          "P_expected_loss": 0.11058378596066011,
+          "D_cost": 576.0
+        }
+      ],
+      "maxsat_rank_in_ga_top_n": 1,
+      "maxsat_rank_in_ga_all": 1
+    },
+    {
+      "graph_id": 8,
+      "graph_stats": {
+        "nP": 159,
+        "nE": 462,
+        "nC": 186,
+        "nD": 62,
+        "total": 869,
+        "edges": 2028
+      },
+      "bp_time_s": 5282.077811956406,
+      "bp_evaluated": 3055,
+      "bp_objective": 3061.977900036551,
+      "bp_defended": [
+        "D0",
+        "D2",
+        "D4",
+        "D52",
+        "D54",
+        "D58"
+      ],
+      "bp_defended_count": 6,
+      "maxsat_time_s": 0.02465081214904785,
+      "maxsat_timeout": false,
+      "maxsat_objective": 3071.9351043490624,
+      "maxsat_defended": [
+        "D0",
+        "D2",
+        "D4",
+        "D47",
+        "D54",
+        "D58"
+      ],
+      "maxsat_defended_count": 6,
+      "strategies_same": false,
+      "strategies_different": true,
+      "winner": "MaxSAT",
+      "objective_diff_ga_minus_sat": -9.957204312511294,
+      "ga_top_n": [
+        {
+          "rank": 1,
+          "objective": 3061.977900036551,
+          "defended": [
+            "D0",
+            "D2",
+            "D4",
+            "D52",
+            "D54",
+            "D58"
+          ],
+          "C_benefit": 3647.0,
+          "P_expected_loss": 0.022099963448724717,
+          "D_cost": 585.0
+        },
+        {
+          "rank": 2,
+          "objective": 3027.98777175297,
+          "defended": [
+            "D2",
+            "D4",
+            "D51",
+            "D52",
+            "D54",
+            "D58"
+          ],
+          "C_benefit": 3643.0,
+          "P_expected_loss": 0.012228247030343427,
+          "D_cost": 615.0
+        },
+        {
+          "rank": 3,
+          "objective": 3015.9974542341865,
+          "defended": [
+            "D0",
+            "D38",
+            "D4",
+            "D52",
+            "D54",
+            "D58"
+          ],
+          "C_benefit": 3628.0,
+          "P_expected_loss": 0.0025457658134281688,
+          "D_cost": 612.0
+        },
+        {
+          "rank": 4,
+          "objective": 2981.9970807139243,
+          "defended": [
+            "D38",
+            "D4",
+            "D51",
+            "D52",
+            "D54",
+            "D58"
+          ],
+          "C_benefit": 3624.0,
+          "P_expected_loss": 0.0029192860757670407,
+          "D_cost": 642.0
+        },
+        {
+          "rank": 5,
+          "objective": 2929.989693390715,
+          "defended": [
+            "D0",
+            "D2",
+            "D3",
+            "D4",
+            "D52",
+            "D54",
+            "D58"
+          ],
+          "C_benefit": 3599.0,
+          "P_expected_loss": 0.010306609285375749,
+          "D_cost": 669.0
+        },
+        {
+          "rank": 6,
+          "objective": 2924.996523490559,
+          "defended": [
+            "D0",
+            "D2",
+            "D4",
+            "D52",
+            "D54",
+            "D58",
+            "D61"
+          ],
+          "C_benefit": 3592.0,
+          "P_expected_loss": 0.0034765094408513554,
+          "D_cost": 667.0
+        },
+        {
+          "rank": 7,
+          "objective": 2921.991771522828,
+          "defended": [
+            "D0",
+            "D2",
+            "D26",
+            "D4",
+            "D52",
+            "D54",
+            "D58"
+          ],
+          "C_benefit": 3589.0,
+          "P_expected_loss": 0.008228477172071317,
+          "D_cost": 667.0
+        },
+        {
+          "rank": 8,
+          "objective": 2918.9969734376878,
+          "defended": [
+            "D0",
+            "D2",
+            "D20",
+            "D4",
+            "D52",
+            "D54",
+            "D58"
+          ],
+          "C_benefit": 3608.0,
+          "P_expected_loss": 0.003026562312317069,
+          "D_cost": 689.0
+        },
+        {
+          "rank": 9,
+          "objective": 2911.989469665606,
+          "defended": [
+            "D0",
+            "D2",
+            "D34",
+            "D4",
+            "D52",
+            "D54",
+            "D58"
+          ],
+          "C_benefit": 3581.0,
+          "P_expected_loss": 0.010530334393856212,
+          "D_cost": 669.0
+        },
+        {
+          "rank": 10,
+          "objective": 2910.9969607460753,
+          "defended": [
+            "D0",
+            "D2",
+            "D4",
+            "D5",
+            "D52",
+            "D54",
+            "D58"
+          ],
+          "C_benefit": 3600.0,
+          "P_expected_loss": 0.0030392539248834225,
+          "D_cost": 689.0
+        }
+      ],
+      "maxsat_rank_in_ga_top_n": null,
+      "maxsat_rank_in_ga_all": null
+    },
+    {
+      "graph_id": 9,
+      "graph_stats": {
+        "nP": 198,
+        "nE": 579,
+        "nC": 235,
+        "nD": 79,
+        "total": 1091,
+        "edges": 2555
+      },
+      "bp_time_s": 9539.816662549973,
+      "bp_evaluated": 3405,
+      "bp_objective": 3627.9941288001337,
+      "bp_defended": [
+        "D17",
+        "D28",
+        "D30",
+        "D32",
+        "D43",
+        "D54",
+        "D70",
+        "D78",
+        "D9"
+      ],
+      "bp_defended_count": 9,
+      "maxsat_time_s": 0.04507589340209961,
+      "maxsat_timeout": false,
+      "maxsat_objective": 3706.2238230432895,
+      "maxsat_defended": [
+        "D28",
+        "D32",
+        "D40",
+        "D43",
+        "D53",
+        "D54",
+        "D70",
+        "D78",
+        "D9"
+      ],
+      "maxsat_defended_count": 9,
+      "strategies_same": false,
+      "strategies_different": true,
+      "winner": "MaxSAT",
+      "objective_diff_ga_minus_sat": -78.22969424315579,
+      "ga_top_n": [
+        {
+          "rank": 1,
+          "objective": 3627.9941288001337,
+          "defended": [
+            "D17",
+            "D28",
+            "D30",
+            "D32",
+            "D43",
+            "D54",
+            "D70",
+            "D78",
+            "D9"
+          ],
+          "C_benefit": 4741.0,
+          "P_expected_loss": 81.00587119986594,
+          "D_cost": 1032.0
+        },
+        {
+          "rank": 2,
+          "objective": 3609.957750994554,
+          "defended": [
+            "D1",
+            "D17",
+            "D28",
+            "D30",
+            "D32",
+            "D43",
+            "D54",
+            "D78",
+            "D9"
+          ],
+          "C_benefit": 4725.0,
+          "P_expected_loss": 81.04224900544659,
+          "D_cost": 1034.0
+        },
+        {
+          "rank": 3,
+          "objective": 3529.4672309384805,
+          "defended": [
+            "D17",
+            "D28",
+            "D30",
+            "D32",
+            "D43",
+            "D54",
+            "D70",
+            "D78"
+          ],
+          "C_benefit": 4762.0,
+          "P_expected_loss": 302.53276906151956,
+          "D_cost": 930.0
+        },
+        {
+          "rank": 4,
+          "objective": 3510.928523762862,
+          "defended": [
+            "D1",
+            "D17",
+            "D28",
+            "D30",
+            "D32",
+            "D43",
+            "D54",
+            "D78"
+          ],
+          "C_benefit": 4746.0,
+          "P_expected_loss": 303.07147623713814,
+          "D_cost": 932.0
+        },
+        {
+          "rank": 5,
+          "objective": 3498.9296230647333,
+          "defended": [
+            "D17",
+            "D28",
+            "D30",
+            "D32",
+            "D40",
+            "D43",
+            "D54",
+            "D70",
+            "D78",
+            "D9"
+          ],
+          "C_benefit": 4654.0,
+          "P_expected_loss": 0.07037693526673826,
+          "D_cost": 1155.0
+        },
+        {
+          "rank": 6,
+          "objective": 3480.897869099359,
+          "defended": [
+            "D1",
+            "D17",
+            "D28",
+            "D30",
+            "D32",
+            "D40",
+            "D43",
+            "D54",
+            "D78",
+            "D9"
+          ],
+          "C_benefit": 4638.0,
+          "P_expected_loss": 0.10213090064130725,
+          "D_cost": 1157.0
+        },
+        {
+          "rank": 7,
+          "objective": 3473.2744697272547,
+          "defended": [
+            "D17",
+            "D28",
+            "D30",
+            "D32",
+            "D43",
+            "D47",
+            "D54",
+            "D70",
+            "D78",
+            "D9"
+          ],
+          "C_benefit": 4687.0,
+          "P_expected_loss": 42.725530272745644,
+          "D_cost": 1171.0
+        },
+        {
+          "rank": 8,
+          "objective": 3471.0469360395855,
+          "defended": [
+            "D17",
+            "D23",
+            "D28",
+            "D30",
+            "D32",
+            "D43",
+            "D54",
+            "D70",
+            "D78",
+            "D9"
+          ],
+          "C_benefit": 4686.0,
+          "P_expected_loss": 80.95306396041465,
+          "D_cost": 1134.0
+        },
+        {
+          "rank": 9,
+          "objective": 3466.283357729192,
+          "defended": [
+            "D17",
+            "D28",
+            "D30",
+            "D32",
+            "D43",
+            "D54",
+            "D61",
+            "D70",
+            "D78",
+            "D9"
+          ],
+          "C_benefit": 4680.0,
+          "P_expected_loss": 42.71664227080745,
+          "D_cost": 1171.0
+        },
+        {
+          "rank": 10,
+          "objective": 3455.2594587302174,
+          "defended": [
+            "D1",
+            "D17",
+            "D28",
+            "D30",
+            "D32",
+            "D43",
+            "D47",
+            "D54",
+            "D78",
+            "D9"
+          ],
+          "C_benefit": 4671.0,
+          "P_expected_loss": 42.74054126978261,
+          "D_cost": 1173.0
+        }
+      ],
+      "maxsat_rank_in_ga_top_n": null,
+      "maxsat_rank_in_ga_all": null
+    },
+    {
+      "graph_id": 10,
+      "graph_stats": {
+        "nP": 157,
+        "nE": 462,
+        "nC": 197,
+        "nD": 66,
+        "total": 882,
+        "edges": 2096
+      },
+      "bp_time_s": 5802.70654463768,
+      "bp_evaluated": 3252,
+      "bp_objective": 2950.988994853314,
+      "bp_defended": [
+        "D10",
+        "D29",
+        "D33",
+        "D34",
+        "D50",
+        "D63",
+        "D64"
+      ],
+      "bp_defended_count": 7,
+      "maxsat_time_s": 0.030942201614379883,
+      "maxsat_timeout": false,
+      "maxsat_objective": 2972.9889834413293,
+      "maxsat_defended": [
+        "D10",
+        "D13",
+        "D29",
+        "D33",
+        "D34",
+        "D39",
+        "D64"
+      ],
+      "maxsat_defended_count": 7,
+      "strategies_same": false,
+      "strategies_different": true,
+      "winner": "MaxSAT",
+      "objective_diff_ga_minus_sat": -21.999988588015185,
+      "ga_top_n": [
+        {
+          "rank": 1,
+          "objective": 2950.988994853314,
+          "defended": [
+            "D10",
+            "D29",
+            "D33",
+            "D34",
+            "D50",
+            "D63",
+            "D64"
+          ],
+          "C_benefit": 3565.0,
+          "P_expected_loss": 0.01100514668589444,
+          "D_cost": 614.0
+        },
+        {
+          "rank": 2,
+          "objective": 2940.996107594021,
+          "defended": [
+            "D10",
+            "D18",
+            "D33",
+            "D34",
+            "D50",
+            "D63",
+            "D64"
+          ],
+          "C_benefit": 3555.0,
+          "P_expected_loss": 0.003892405979257127,
+          "D_cost": 614.0
+        },
+        {
+          "rank": 3,
+          "objective": 2929.997704591678,
+          "defended": [
+            "D10",
+            "D33",
+            "D34",
+            "D41",
+            "D50",
+            "D63",
+            "D64"
+          ],
+          "C_benefit": 3564.0,
+          "P_expected_loss": 0.0022954083219978603,
+          "D_cost": 634.0
+        },
+        {
+          "rank": 4,
+          "objective": 2926.970148668813,
+          "defended": [
+            "D10",
+            "D29",
+            "D33",
+            "D34",
+            "D39",
+            "D63",
+            "D64"
+          ],
+          "C_benefit": 3562.0,
+          "P_expected_loss": 0.029851331186931822,
+          "D_cost": 635.0
+        },
+        {
+          "rank": 5,
+          "objective": 2916.992667390955,
+          "defended": [
+            "D10",
+            "D18",
+            "D33",
+            "D34",
+            "D39",
+            "D63",
+            "D64"
+          ],
+          "C_benefit": 3552.0,
+          "P_expected_loss": 0.007332609044990742,
+          "D_cost": 635.0
+        },
+        {
+          "rank": 6,
+          "objective": 2905.996419245948,
+          "defended": [
+            "D10",
+            "D33",
+            "D34",
+            "D39",
+            "D41",
+            "D63",
+            "D64"
+          ],
+          "C_benefit": 3561.0,
+          "P_expected_loss": 0.003580754052134353,
+          "D_cost": 655.0
+        },
+        {
+          "rank": 7,
+          "objective": 2904.985669127901,
+          "defended": [
+            "D1",
+            "D10",
+            "D29",
+            "D33",
+            "D34",
+            "D63",
+            "D64"
+          ],
+          "C_benefit": 3542.0,
+          "P_expected_loss": 0.014330872099082662,
+          "D_cost": 637.0
+        },
+        {
+          "rank": 8,
+          "objective": 2894.990097430691,
+          "defended": [
+            "D1",
+            "D10",
+            "D18",
+            "D33",
+            "D34",
+            "D63",
+            "D64"
+          ],
+          "C_benefit": 3532.0,
+          "P_expected_loss": 0.009902569308688087,
+          "D_cost": 637.0
+        },
+        {
+          "rank": 9,
+          "objective": 2883.9981033146655,
+          "defended": [
+            "D1",
+            "D10",
+            "D33",
+            "D34",
+            "D41",
+            "D63",
+            "D64"
+          ],
+          "C_benefit": 3541.0,
+          "P_expected_loss": 0.0018966853344145674,
+          "D_cost": 657.0
+        },
+        {
+          "rank": 10,
+          "objective": 2828.995413537642,
+          "defended": [
+            "D10",
+            "D18",
+            "D29",
+            "D33",
+            "D34",
+            "D50",
+            "D63",
+            "D64"
+          ],
+          "C_benefit": 3523.0,
+          "P_expected_loss": 0.004586462357941704,
+          "D_cost": 694.0
+        }
+      ],
+      "maxsat_rank_in_ga_top_n": null,
+      "maxsat_rank_in_ga_all": null
+    }
+  ]
+}

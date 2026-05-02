@@ -1,0 +1,299 @@
+{
+  "base_config": {
+    "nP": 10,
+    "nE": 24,
+    "nC": 30,
+    "nD": 15
+  },
+  "target_total": 300,
+  "maxhs_timeout": 120,
+  "population_size": 100,
+  "genmax": 50,
+  "results": [
+    {
+      "bp_time_s": 61.404844522476196,
+      "bp_evaluated": 1475,
+      "bp_objective": 154.63071837701693,
+      "bp_defended": [
+        "D1",
+        "D14",
+        "D4",
+        "D8"
+      ],
+      "bp_defended_count": 4,
+      "maxsat_time_s": 3.0994415283203125e-05,
+      "maxsat_timeout": false,
+      "maxsat_objective": 154.63071837701693,
+      "maxsat_defended": [
+        "D1",
+        "D14",
+        "D4",
+        "D8"
+      ],
+      "maxsat_defended_count": 4,
+      "strategies_different": false,
+      "objective_diff": 0.0,
+      "config": {
+        "nP": 10,
+        "nE": 24,
+        "nC": 30,
+        "nD": 15,
+        "total": 79,
+        "scale": 1.0
+      }
+    },
+    {
+      "bp_time_s": 215.26303267478943,
+      "bp_evaluated": 2665,
+      "bp_objective": 362.8996256448296,
+      "bp_defended": [
+        "D1",
+        "D11",
+        "D17",
+        "D2",
+        "D4",
+        "D7"
+      ],
+      "bp_defended_count": 6,
+      "maxsat_time_s": 5.125999450683594e-05,
+      "maxsat_timeout": false,
+      "maxsat_objective": 362.8996256448296,
+      "maxsat_defended": [
+        "D1",
+        "D11",
+        "D17",
+        "D2",
+        "D4",
+        "D7"
+      ],
+      "maxsat_defended_count": 6,
+      "strategies_different": false,
+      "objective_diff": 0.0,
+      "config": {
+        "nP": 15,
+        "nE": 36,
+        "nC": 45,
+        "nD": 22,
+        "total": 118,
+        "scale": 1.5
+      }
+    },
+    {
+      "bp_time_s": 260.0701606273651,
+      "bp_evaluated": 2541,
+      "bp_objective": 666.4098128138712,
+      "bp_defended": [
+        "D12",
+        "D16",
+        "D17",
+        "D19",
+        "D24",
+        "D28",
+        "D7"
+      ],
+      "bp_defended_count": 7,
+      "maxsat_time_s": 4.1484832763671875e-05,
+      "maxsat_timeout": false,
+      "maxsat_objective": 715.6996861325501,
+      "maxsat_defended": [
+        "D1",
+        "D12",
+        "D18",
+        "D20",
+        "D23",
+        "D26",
+        "D7"
+      ],
+      "maxsat_defended_count": 7,
+      "strategies_different": true,
+      "objective_diff": -49.28987331867893,
+      "config": {
+        "nP": 20,
+        "nE": 48,
+        "nC": 60,
+        "nD": 30,
+        "total": 158,
+        "scale": 2.0
+      }
+    },
+    {
+      "bp_time_s": 430.09159326553345,
+      "bp_evaluated": 2821,
+      "bp_objective": 867.1436856346952,
+      "bp_defended": [
+        "D15",
+        "D16",
+        "D33",
+        "D35",
+        "D36",
+        "D6",
+        "D9"
+      ],
+      "bp_defended_count": 7,
+      "maxsat_time_s": 3.337860107421875e-05,
+      "maxsat_timeout": false,
+      "maxsat_objective": 933.9626039760703,
+      "maxsat_defended": [
+        "D15",
+        "D16",
+        "D17",
+        "D18",
+        "D20",
+        "D35",
+        "D5"
+      ],
+      "maxsat_defended_count": 7,
+      "strategies_different": true,
+      "objective_diff": -66.81891834137514,
+      "config": {
+        "nP": 25,
+        "nE": 60,
+        "nC": 75,
+        "nD": 37,
+        "total": 197,
+        "scale": 2.5
+      }
+    },
+    {
+      "bp_time_s": 470.34253215789795,
+      "bp_evaluated": 2577,
+      "bp_objective": 1116.7734231496668,
+      "bp_defended": [
+        "D13",
+        "D15",
+        "D16",
+        "D2",
+        "D21",
+        "D29",
+        "D31",
+        "D36",
+        "D41",
+        "D44"
+      ],
+      "bp_defended_count": 10,
+      "maxsat_time_s": 4.4345855712890625e-05,
+      "maxsat_timeout": false,
+      "maxsat_objective": 1116.7734231496668,
+      "maxsat_defended": [
+        "D13",
+        "D15",
+        "D16",
+        "D2",
+        "D21",
+        "D29",
+        "D31",
+        "D36",
+        "D41",
+        "D44"
+      ],
+      "maxsat_defended_count": 10,
+      "strategies_different": false,
+      "objective_diff": 0.0,
+      "config": {
+        "nP": 30,
+        "nE": 72,
+        "nC": 90,
+        "nD": 45,
+        "total": 237,
+        "scale": 3.0
+      }
+    },
+    {
+      "bp_time_s": 646.6464343070984,
+      "bp_evaluated": 2880,
+      "bp_objective": 1136.4730951520598,
+      "bp_defended": [
+        "D14",
+        "D19",
+        "D2",
+        "D23",
+        "D26",
+        "D27",
+        "D28",
+        "D47",
+        "D5",
+        "D51",
+        "D6"
+      ],
+      "bp_defended_count": 11,
+      "maxsat_time_s": 5.6743621826171875e-05,
+      "maxsat_timeout": false,
+      "maxsat_objective": 1206.2181775600386,
+      "maxsat_defended": [
+        "D18",
+        "D19",
+        "D2",
+        "D23",
+        "D24",
+        "D26",
+        "D27",
+        "D29",
+        "D35",
+        "D48",
+        "D5",
+        "D51"
+      ],
+      "maxsat_defended_count": 12,
+      "strategies_different": true,
+      "objective_diff": -69.74508240797877,
+      "config": {
+        "nP": 35,
+        "nE": 84,
+        "nC": 105,
+        "nD": 52,
+        "total": 276,
+        "scale": 3.5
+      }
+    },
+    {
+      "bp_time_s": 729.531088590622,
+      "bp_evaluated": 3036,
+      "bp_objective": 1123.7681661223542,
+      "bp_defended": [
+        "D14",
+        "D15",
+        "D25",
+        "D31",
+        "D39",
+        "D43",
+        "D44",
+        "D46",
+        "D47",
+        "D58",
+        "D9"
+      ],
+      "bp_defended_count": 11,
+      "maxsat_time_s": 8.034706115722656e-05,
+      "maxsat_timeout": false,
+      "maxsat_objective": 1305.4843424736719,
+      "maxsat_defended": [
+        "D1",
+        "D20",
+        "D21",
+        "D25",
+        "D26",
+        "D31",
+        "D35",
+        "D37",
+        "D38",
+        "D4",
+        "D42",
+        "D44",
+        "D48",
+        "D51",
+        "D53"
+      ],
+      "maxsat_defended_count": 15,
+      "strategies_different": true,
+      "objective_diff": -181.7161763513177,
+      "config": {
+        "nP": 40,
+        "nE": 96,
+        "nC": 120,
+        "nD": 60,
+        "total": 316,
+        "scale": 4.0
+      }
+    }
+  ]
+}

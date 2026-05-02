@@ -1,0 +1,85 @@
+================================================================================
+       SAT vs GA Performance Analysis Report
+================================================================================
+
+========================================
+  SMALL-SCALE RANDOM
+========================================
+  Total Nodes: 79
+  Edges: 149
+  Graphs: 100
+
+  Performance:
+    SAT Wins: 1 | GA Wins: 8 | Ties: 91
+    Winner: GA
+
+  Runtime:
+    GA: 45.0518s
+    SAT: 12.3701ms
+
+  Objective:
+    GA: 325.3335
+    SAT: 323.3990
+    Diff (SAT - GA): -1.9346
+
+========================================
+  SMALL-SCALE STRUCTURED
+========================================
+  Total Nodes: 76
+  Edges: 164
+  Graphs: 100
+
+  Performance:
+    SAT Wins: 0 | GA Wins: 31 | Ties: 69
+    Winner: GA
+
+  Runtime:
+    GA: 1.7358s
+    SAT: 7.0824ms
+
+  Objective:
+    GA: -53.5061
+    SAT: -71.2383
+    Diff (SAT - GA): -17.7322
+
+========================================
+  MEDIUM-SCALE RANDOM
+========================================
+  Total Nodes: 790
+  Edges: 1361
+  Graphs: 10
+
+  Performance:
+    SAT Wins: 10 | GA Wins: 0 | Ties: 0
+    Winner: SAT
+
+  Runtime:
+    GA: 1812.2593s
+    SAT: 10087.2619ms
+
+  Objective:
+    GA: 2947.5945
+    SAT: 4004.5480
+    Diff (SAT - GA): 1056.9534
+
+========================================
+  MEDIUM-SCALE STRUCTURED
+========================================
+  Total Nodes: 1058
+  Edges: 2493
+  Graphs: 10
+
+  Performance:
+    SAT Wins: 7 | GA Wins: 1 | Ties: 2
+    Winner: SAT
+
+  Runtime:
+    GA: 7123.7981s
+    SAT: 37.7285ms
+
+  Objective:
+    GA: 3437.4495
+    SAT: 3493.3271
+    Diff (SAT - GA): 55.8775
+
+================================================================================

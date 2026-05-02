@@ -1,0 +1,169 @@
+% =============================================================================
+% MulVAL facts (MATCHES your running_rules.P)
+% Goal: execCode(admin_ws, root)
+%
+% Your key rule (line 99-103):
+%   execCode(H, Perm) :-
+%      vulExists(H, _, Software, remoteExploit, privEscalation),
+%      networkServiceInfo(H, Software, Protocol, Port, Perm),
+%      netAccess(H, Protocol, Port).
+%
+% Therefore we must ensure:
+%   1) hacl(...) makes netAccess(...) true
+%   2) networkServiceInfo host+software+proto+port exist
+%   3) vulExists/5 has (remoteExploit, privEscalation) with SAME Software atom
+%   4) To reach root, make Perm=root for at least one exploitable service (or use localExploit rule)
+% =============================================================================
+
+% --- Attacker ----------------------------------------------------------------
+attackerLocated(attacker).
+% attackerLocated(internet).  <-- [REMOVED/COMMENTED OUT]
+
+% --- (Optional) Layering metadata (ignored if unused) -------------------------
+zone(dmz). zone(trusted). zone(inside).
+locatedIn(web_dmz, dmz).
+locatedIn(api_dmz, dmz).
+locatedIn(mail_dmz, dmz).
+locatedIn(dns_dmz, dmz).
+locatedIn(edge_gw, trusted).
+locatedIn(db_core, trusted).
+locatedIn(file_srv, trusted).
+locatedIn(admin_ws, inside).
+
+% =============================================================================
+% Connectivity (hacl/4 ONLY; your rules don't use aclH/4)
+% =============================================================================
+
+% External -> DMZ / Edge (Attacker Source)
+hacl(attacker, web_dmz,  tcp, 80).
+hacl(attacker, api_dmz,  tcp, 443).
+hacl(attacker, mail_dmz, tcp, 25).
+hacl(attacker, mail_dmz, tcp, 143).
+hacl(attacker, dns_dmz,  udp, 53).
+hacl(attacker, edge_gw,  tcp, 22).
+
+% [REMOVED/COMMENTED OUT] Internet Source rules are no longer reachable
+% hacl(internet, web_dmz,  tcp, 80).
+% hacl(internet, api_dmz,  tcp, 443).
+% hacl(internet, mail_dmz, tcp, 25).
+% hacl(internet, mail_dmz, tcp, 143).
+% hacl(internet, dns_dmz,  udp, 53).
+% hacl(internet, edge_gw,  tcp, 22).
+
+% Edge -> inside admin (mgmt plane)
+hacl(edge_gw, admin_ws, tcp, 3389).
+hacl(edge_gw, admin_ws, tcp, 445).
+
+% DMZ pivot channels
+hacl(web_dmz, db_core, tcp, 5432).
+hacl(api_dmz, db_core, tcp, 5432).
+
+hacl(mail_dmz, file_srv, tcp, 445).
+
+% Lateral into admin
+hacl(db_core,  admin_ws, tcp, 3389).
+hacl(db_core,  admin_ws, tcp, 445).
+hacl(file_srv, admin_ws, tcp, 445).
+
+% ---- NAT / Port-forward fallback (IMPORTANT) --------------------------------
+% Direct access rules for 'attacker' kept, 'internet' removed.
+hacl(attacker, admin_ws, tcp, 3389).
+% hacl(internet, admin_ws, tcp, 3389). <-- [REMOVED/COMMENTED OUT]
+
+% =============================================================================
+% Services (MUST match Software + Protocol + Port used by vulExists/5)
+% =============================================================================
+% 5-arity: networkServiceInfo(Host, Software, Protocol, Port, Perm).
+
+networkServiceInfo(web_dmz,  apache,  tcp, 80,   www).
+networkServiceInfo(api_dmz,  nginx,   tcp, 443,  www).
+networkServiceInfo(mail_dmz, postfix, tcp, 25,   root).
+networkServiceInfo(mail_dmz, imapd,   tcp, 143,  mail).
+networkServiceInfo(dns_dmz,  bind,    udp, 53,   root).
+
+networkServiceInfo(edge_gw,  openssh, tcp, 22,   root).
+networkServiceInfo(db_core,  postgres,tcp, 5432, postgres).
+networkServiceInfo(file_srv, samba,   tcp, 445,  root).
+
+% CRITICAL: to satisfy goal execCode(admin_ws, root),
+% make the exploitable server program run as root:
+networkServiceInfo(admin_ws, rdp,     tcp, 3389, root).
+networkServiceInfo(admin_ws, samba,   tcp, 445,  root).
+
+% 4-arity duplicates (harmless; some tooling expects them)
+networkServiceInfo(web_dmz,  apache,  tcp, 80).
+networkServiceInfo(api_dmz,  nginx,   tcp, 443).
+networkServiceInfo(mail_dmz, postfix, tcp, 25).
+networkServiceInfo(mail_dmz, imapd,   tcp, 143).
+networkServiceInfo(dns_dmz,  bind,    udp, 53).
+networkServiceInfo(edge_gw,  openssh, tcp, 22).
+networkServiceInfo(db_core,  postgres,tcp, 5432).
+networkServiceInfo(file_srv, samba,   tcp, 445).
+networkServiceInfo(admin_ws, rdp,     tcp, 3389).
+networkServiceInfo(admin_ws, samba,   tcp, 445).
+
+% =============================================================================
+% Vulnerabilities
+% =============================================================================
+
+% --- admin_ws: RDP remote exploit -> execCode(admin_ws, root) -----------------
+vulExists(admin_ws, 'CVE-2019-0708', rdp).
+vulExists(admin_ws, 'CVE-2019-0708').
+vulProperty('CVE-2019-0708', remoteExploit, privEscalation).
+vulExists(admin_ws, 'CVE-2019-0708', rdp, remoteExploit, privEscalation).
+
+% --- admin_ws: optional local privesc ----------------------------------------
+vulExists(admin_ws, 'CVE-2021-3156', sudo).
+vulExists(admin_ws, 'CVE-2021-3156').
+vulProperty('CVE-2021-3156', localExploit, privEscalation).
+vulExists(admin_ws, 'CVE-2021-3156', sudo, localExploit, privEscalation).
+
+% --- admin_ws: SMB remote exploit alternate path -----------------------------
+vulExists(admin_ws, 'CVE-2020-0796', samba).
+vulExists(admin_ws, 'CVE-2020-0796').
+vulProperty('CVE-2020-0796', remoteExploit, privEscalation).
+vulExists(admin_ws, 'CVE-2020-0796', samba, remoteExploit, privEscalation).
+
+% --- edge_gw foothold --------------------------------------------------------
+vulExists(edge_gw, 'CVE-2018-15473', openssh).
+vulExists(edge_gw, 'CVE-2018-15473').
+vulProperty('CVE-2018-15473', remoteExploit, privEscalation).
+vulExists(edge_gw, 'CVE-2018-15473', openssh, remoteExploit, privEscalation).
+
+% --- DMZ footholds -----------------------------------------------------------
+vulExists(web_dmz, 'CVE-2021-44228', apache).
+vulExists(web_dmz, 'CVE-2021-44228').
+vulProperty('CVE-2021-44228', remoteExploit, privEscalation).
+vulExists(web_dmz, 'CVE-2021-44228', apache, remoteExploit, privEscalation).
+
+vulExists(api_dmz, 'CVE-2021-41773', nginx).
+vulExists(api_dmz, 'CVE-2021-41773').
+vulProperty('CVE-2021-41773', remoteExploit, privEscalation).
+vulExists(api_dmz, 'CVE-2021-41773', nginx, remoteExploit, privEscalation).
+
+% --- DB/File footholds -------------------------------------------------------
+vulExists(db_core, 'CVE-2019-9193', postgres).
+vulExists(db_core, 'CVE-2019-9193').
+vulProperty('CVE-2019-9193', remoteExploit, privEscalation).
+vulExists(db_core, 'CVE-2019-9193', postgres, remoteExploit, privEscalation).
+
+vulExists(file_srv, 'CVE-2017-7494', samba).
+vulExists(file_srv, 'CVE-2017-7494').
+vulProperty('CVE-2017-7494', remoteExploit, privEscalation).
+vulExists(file_srv, 'CVE-2017-7494', samba, remoteExploit, privEscalation).
+
+% --- mail foothold optional --------------------------------------------------
+vulExists(mail_dmz, 'CVE-2020-8617', postfix).
+vulExists(mail_dmz, 'CVE-2020-8617').
+vulProperty('CVE-2020-8617', remoteExploit, privEscalation).
+vulExists(mail_dmz, 'CVE-2020-8617', postfix, remoteExploit, privEscalation).
+
+% =============================================================================
+% Goal
+% =============================================================================
+attackGoal(execCode(admin_ws, root)).
+attackerGoal(execCode(admin_ws, root)).
+
+% =============================================================================
+% End
+% =============================================================================
