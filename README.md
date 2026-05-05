@@ -68,6 +68,26 @@ The main edge types are:
 - `E → C`: an exploit requires a prerequisite condition;
 - `C → D`: a condition is associated with a defense option.
 
+## MaxHS Installation
+
+This project uses **[MaxHS](https://github.com/fbacchus/MaxHS)** as the MaxSAT solver. MaxHS is included as a Git submodule and must be configured with IBM CPLEX before use.
+
+### Prerequisites
+
+- **IBM CPLEX Optimization Studio** — required for linking. Available free under the [IBM Academic Initiative](https://www.ibm.com/academic) for faculty and graduate students in academia.
+
+### Setup Steps
+
+1. **Initialize the MaxHS submodule** (from the project root):
+
+```bash
+git submodule update --init --recursive
+```
+
+2. **Configure and build MaxHS**. Follow the instructions at [https://github.com/fbacchus/MaxHS](https://github.com/fbacchus/MaxHS): set the `LINUX_CPLEXLIBDIR` and `LINUX_CPLEXINCDIR` (or `DARWIN_*` on macOS) variables in the `MaxHS/Makefile`, then run `make`.
+
+3. The MaxHS binary will be built at `MaxHS/build/release/bin/maxhs`. Pass this path via the `--maxhs-bin` argument (or set it in code) when running the project scripts.
+
 ## Installation
 
 ### 1. Create the Conda environment
@@ -78,24 +98,6 @@ conda activate bag
 ```
 
 Main dependencies include Python 3.10+, `networkx`, `numpy`, `scipy`, `matplotlib`, `pgmpy`, `torch`, `torch-geometric`, and `python-sat`.
-
-### 2. Build MaxHS (required for exact optimization)
-
-MaxHS depends on **CPLEX** from IBM (available free via the [IBM Academic Initiative](https://www.ibm.com/academic)). After obtaining CPLEX:
-
-```bash
-# Clone MaxHS submodule
-git submodule update --init --recursive
-
-# Build MaxHS — edit Makefile first to set CPLEX paths:
-#   LINUX_CPLEXLIBDIR=<path to CPLEX library>
-#   LINUX_CPLEXINCDIR=<path to CPLEX headers>
-cd MaxHS && make && cd ..
-```
-
-The compiled binary will be at `MaxHS/build/release/bin/maxhs`.
-
-> **Note:** If you do not have CPLEX access, you can still use the BP and GA baselines which do not require it.
 
 ## Usage
 
@@ -294,7 +296,7 @@ This is a research prototype. Please cite the corresponding work if this reposit
 
 This project stands on the shoulders of several open-source tools and research works:
 
-- **[MaxHS](https://github.com/fbacchus/MaxHS)** — the core MaxSAT solver used for exact defense optimization. Developed by fbacchus. Included as a git submodule (`MaxHS/`).
+- **[MaxHS](https://github.com/fbacchus/MaxHS)** — the core MaxSAT solver used for exact defense optimization. Developed by fbacchus. Included as a Git submodule; see the [MaxHS Installation](#maxhs-installation) section for setup.
 
 - **[CaDiCaL](http://fmv.jku.at/cadical/)** — the underlying CDCL SAT solver integrated into MaxHS, maintained by Armin Biere.
 
