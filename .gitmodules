@@ -1,0 +1,3 @@
+[submodule "MaxHS"]
+	path = MaxHS
+	url = https://github.com/fbacchus/MaxHS.git
