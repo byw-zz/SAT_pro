@@ -70,16 +70,7 @@ The main edge types are:
 
 ## Installation
 
-### 1. Build MaxHS
-
-```bash
-git clone https://github.com/fbacchus/MaxHS.git
-cd MaxHS
-./configure.sh
-make
-```
-
-### 2. Create the Conda environment
+### 1. Create the Conda environment
 
 ```bash
 conda env create -f environment.yml
@@ -87,6 +78,24 @@ conda activate bag
 ```
 
 Main dependencies include Python 3.10+, `networkx`, `numpy`, `scipy`, `matplotlib`, `pgmpy`, `torch`, `torch-geometric`, and `python-sat`.
+
+### 2. Build MaxHS (required for exact optimization)
+
+MaxHS depends on **CPLEX** from IBM (available free via the [IBM Academic Initiative](https://www.ibm.com/academic)). After obtaining CPLEX:
+
+```bash
+# Clone MaxHS submodule
+git submodule update --init --recursive
+
+# Build MaxHS — edit Makefile first to set CPLEX paths:
+#   LINUX_CPLEXLIBDIR=<path to CPLEX library>
+#   LINUX_CPLEXINCDIR=<path to CPLEX headers>
+cd MaxHS && make && cd ..
+```
+
+The compiled binary will be at `MaxHS/build/release/bin/maxhs`.
+
+> **Note:** If you do not have CPLEX access, you can still use the BP and GA baselines which do not require it.
 
 ## Usage
 
@@ -283,4 +292,26 @@ This is a research prototype. Please cite the corresponding work if this reposit
 
 ## Acknowledgments
 
-This project uses MaxHS for MaxSAT solving and relies on common scientific Python libraries for graph processing, numerical computation, and visualization.
+This project stands on the shoulders of several open-source tools and research works:
+
+- **[MaxHS](https://github.com/fbacchus/MaxHS)** — the core MaxSAT solver used for exact defense optimization. Developed by fbacchus. Included as a git submodule (`MaxHS/`).
+
+- **[CaDiCaL](http://fmv.jku.at/cadical/)** — the underlying CDCL SAT solver integrated into MaxHS, maintained by Armin Biere.
+
+- **[MiniSat](http://minisat.se/)** — the original CDCL SAT solver used in the core MaxHS architecture, created by Niklas Eén and Niklas Sörensson.
+
+- **[Glucose](https://www.labri.fr/perso/lsimon/glucose/)** — the improved CDCL solver used by MaxHS for its SAT engine, developed by Gilles Audemard and Laurent Simon.
+
+- **[python-sat / pysat](https://pysathq.github.io/)** — the Python interface for reading/writing CNF and WCNF files, developed by the PySAT team at the University of Helsinki.
+
+- **[NetworkX](https://networkx.org/)** — used for attack graph construction and manipulation.
+
+- **[PyMoo](https://pymoo.org/)** — used for the Genetic Algorithm (NSGA-II) baseline implementation.
+
+- **[pgmpy](http://pgmpy.org/)** — used for probabilistic modeling in the Belief Propagation component.
+
+- **[PyTorch](https://pytorch.org/)** and **[PyTorch Geometric](https://pytorch-geometric.readthedocs.io/)** — used for the neural BP and GNN-based BP components.
+
+- **MulVAL** — the network security analysis framework that provides the attack graph format used by `mulval_graph.py`. See Ou, Xinming, Wayne Fulp, and Ronald Farl. *"A Graph-Based Network Security Model"*, and Ammann, Pam, and Joel. *"Scalable, Graph-Based Network Vulnerability Analysis"*.
+
+We are grateful to all the authors and maintainers of these projects for making their work publicly available.

@@ -10,7 +10,7 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from pathlib import Path
 
-MAXHS_BIN = "/home/wzz/MaxHS/build/release/bin/maxhs"
+MAXHS_BIN = "MaxHS/build/release/bin/maxhs"
 FIXED_E_PROBS = [
     0.02, 0.05, 0.10, 0.12, 0.15, 0.18,
     0.20, 0.25, 0.30, 0.32, 0.35, 0.38,

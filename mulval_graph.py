@@ -34,7 +34,7 @@ def export_wcnf_v2(cnf_data, filename, hard_weight=1000000, soft_scale=1):
     _export_wcnf_v2(cnf_data, filename, hard_weight, soft_scale)
     sys.stdout = old_stdout
 
-MAXHS_BIN = "/home/wzz/MaxHS/build/release/bin/maxhs"
+MAXHS_BIN = "MaxHS/build/release/bin/maxhs"
 
 def read_csv_maybe_noheader(path, min_cols):
     df = pd.read_csv(path, header=None)
