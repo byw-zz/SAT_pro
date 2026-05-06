@@ -21,7 +21,7 @@ def _get_cnf_converter(sat_type):
     if sat_type == "pro":
         from graph2sat.graph2sat import bn_to_maxsat_cnf
     else:
-        from graph2sat.garaph2sat_without_pro import bn_to_maxsat_cnf
+        from graph2sat.graph2sat_without_pro import bn_to_maxsat_cnf
     return bn_to_maxsat_cnf
 
 
