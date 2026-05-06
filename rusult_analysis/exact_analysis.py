@@ -1,12 +1,13 @@
 """Bayesian network defense strategy exact analysis using pgmpy Variable Elimination."""
 
 import argparse
+import os
 import sys
 import time
 from collections import defaultdict
 from itertools import product
 
-sys.path.insert(0, "/home/wzz/SAT_pro")
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from generate_graph.random_graph import generate_bn_dag_multi_pe, visualize_bn
 from generate_graph.structured_graph import generate_bn_from_root_and_reverse

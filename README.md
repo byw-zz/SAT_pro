@@ -47,7 +47,7 @@ SAT_pro/
 ├── result_analysis/                # Result analysis scripts
 ├── scaling_results/                # Scaling experiment outputs
 ├── testnet/                        # Test network graphs
-└── environment.yml                 # Conda environment specification
+└── environment.yml                 # Python environment specification
 ```
 
 ## Node and Edge Types
@@ -68,11 +68,29 @@ The main edge types are:
 - `E → C`: an exploit requires a prerequisite condition;
 - `C → D`: a condition is associated with a defense option.
 
+## Dependencies
+
+The Python dependencies are specified in `environment.yml`. Main packages include Python 3.10+, `networkx`, `numpy`, `scipy`, `matplotlib`, `pgmpy`, `torch`, `torch-geometric`, and `python-sat`.
+
+Experiments that use the exact MaxSAT baseline additionally require MaxHS and IBM CPLEX Optimization Studio.
+
 ## MaxHS Installation
 
-This project uses **[MaxHS](https://github.com/fbacchus/MaxHS)** as the MaxSAT solver. MaxHS is included as a Git submodule and must be compiled with IBM CPLEX Optimization Studio before running experiments that require MaxSAT solving.
+This project uses **[MaxHS](https://github.com/fbacchus/MaxHS)** as the MaxSAT solver. MaxHS can be obtained from its official repository:
 
-IBM CPLEX is commercial software and is **not distributed with this repository**. Users should install IBM CPLEX Optimization Studio separately, for example through an academic or institutional license.
+```bash
+git clone https://github.com/fbacchus/MaxHS.git
+```
+
+For this project, clone MaxHS under the project root so that the directory layout is:
+
+```text
+SAT_pro/
+├── MaxHS/
+└── ...
+```
+
+MaxHS requires IBM CPLEX Optimization Studio for linking. CPLEX should be installed separately and is not distributed with this repository.
 
 ### Prerequisites
 
@@ -90,19 +108,9 @@ sudo apt-get update
 sudo apt-get install build-essential zlib1g-dev
 ```
 
-### Step 1: Initialize the MaxHS submodule
+### Install IBM CPLEX Optimization Studio
 
-From the project root directory:
-
-```bash
-git submodule update --init --recursive
-```
-
-If GitHub is unreachable from the target machine, MaxHS may also be downloaded manually from https://github.com/fbacchus/MaxHS and placed under the project root as `MaxHS/`.
-
-### Step 2: Install IBM CPLEX Optimization Studio
-
-Install CPLEX in a directory that the current user can write to. On a headless Linux server, the installer can usually be launched in console mode:
+On a headless Linux server, the CPLEX installer can usually be launched in console mode:
 
 ```bash
 chmod +x cplex_studio2211.linux_x86_64.bin
@@ -124,7 +132,7 @@ After installation, the following paths should exist:
 
 The library directory should contain `libcplex.a`.
 
-### Step 3: Configure the MaxHS Makefile
+### Configure the MaxHS Makefile
 
 Edit `MaxHS/Makefile` and set the CPLEX include and library paths.
 
@@ -137,7 +145,7 @@ LINUX_CPLEXINCDIR = /home/<user>/ibm/ILOG/CPLEX_Studio2211/cplex/include
 
 For macOS, edit the corresponding `DARWIN_CPLEXLIBDIR` and `DARWIN_CPLEXINCDIR` variables instead.
 
-### Step 4: Build MaxHS
+### Build MaxHS
 
 ```bash
 cd MaxHS
@@ -150,7 +158,7 @@ During linking, CPLEX may emit a warning similar to:
 Using 'dlopen' in statically linked applications requires at runtime the shared libraries from the glibc version used for linking
 ```
 
-This warning is expected when linking against the CPLEX static library and can usually be ignored as long as `make` finishes successfully.
+This warning is usually harmless if the build completes successfully.
 
 ## Usage
 
@@ -240,7 +248,7 @@ python evaluation/sat_ga_visualization.py \
 
 ### Process MulVAL attack graph with MaxSAT
 
-Convert MulVAL exported CSV files (vertices and arcs) to WCNF and solve with MaxHS:
+Convert MulVAL exported CSV files, namely vertices and arcs, to WCNF and solve with MaxHS:
 
 ```bash
 python mulval_graph.py \
@@ -340,6 +348,7 @@ The evaluation scripts support:
 - Random graphs are useful for stress testing because they usually contain less regular structure and more diverse dependency patterns.
 - Structured graphs are useful for controlled scalability experiments.
 - For reproducible experiments, always set `--seed` and save the result JSON file.
+- CPLEX and precompiled MaxHS binaries are not distributed with this repository. MaxHS should be built locally after configuring the CPLEX paths.
 
 ## License
 
@@ -349,7 +358,7 @@ This is a research prototype. Please cite the corresponding work if this reposit
 
 This project stands on the shoulders of several open-source tools and research works:
 
-- **[MaxHS](https://github.com/fbacchus/MaxHS)** — the core MaxSAT solver used for exact defense optimization. Developed by fbacchus. Included as a Git submodule; see the [MaxHS Installation](#maxhs-installation) section for setup.
+- **[MaxHS](https://github.com/fbacchus/MaxHS)** — the core MaxSAT solver used for exact defense optimization. Developed by fbacchus; see the [MaxHS Installation](#maxhs-installation) section for setup.
 
 - **[CaDiCaL](http://fmv.jku.at/cadical/)** — the underlying CDCL SAT solver integrated into MaxHS, maintained by Armin Biere.
 
@@ -361,7 +370,7 @@ This project stands on the shoulders of several open-source tools and research w
 
 - **[NetworkX](https://networkx.org/)** — used for attack graph construction and manipulation.
 
-- **[PyMoo](https://pymoo.org/)** — used for the Genetic Algorithm (NSGA-II) baseline implementation.
+- **[PyMoo](https://pymoo.org/)** — used for the Genetic Algorithm baseline implementation.
 
 - **[pgmpy](http://pgmpy.org/)** — used for probabilistic modeling in the Belief Propagation component.
 

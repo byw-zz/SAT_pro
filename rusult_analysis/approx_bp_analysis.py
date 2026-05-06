@@ -16,7 +16,10 @@ from pymoo.operators.crossover.pntx import TwoPointCrossover
 from pymoo.operators.mutation.bitflip import BitflipMutation
 from pymoo.optimize import minimize
 
-sys.path.insert(0, "/home/wzz/SAT_pro")
+import os
+import sys
+
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from generate_graph.random_graph import generate_bn_dag_multi_pe
 from generate_graph.structured_graph import generate_bn_from_root_and_reverse

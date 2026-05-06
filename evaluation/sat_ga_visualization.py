@@ -663,8 +663,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--base-dir",
         type=str,
-        default="/home/wzz/SAT_pro",
-        help="Directory containing input JSON files. Default: /home/wzz/SAT_pro",
+        default=str(Path(__file__).parent.parent),
+        help="Directory containing input JSON files. Default: project root",
     )
     parser.add_argument(
         "--output-dir",

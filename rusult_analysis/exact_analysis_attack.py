@@ -1,12 +1,13 @@
 """MulVAL attack graph defense strategy exact analysis using pgmpy Variable Elimination."""
 
 import argparse
+import os
 import sys
 import time
 from collections import defaultdict
 from itertools import product
 
-sys.path.insert(0, "/home/wzz/SAT_pro")
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from pgmpy.models import DiscreteBayesianNetwork
 from pgmpy.factors.discrete import TabularCPD

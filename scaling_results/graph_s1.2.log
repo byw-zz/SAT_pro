@@ -1,5 +1,5 @@
 c MaxHS 4.0.0
-c Instance: /home/wzz/SAT_pro/scaling_results/graph_s1.2.wcnf
+c Instance: scaling_results/graph_s1.2.wcnf
 c Parameter Settings
 c ============================================
 c  A: General MaxHS Options
@@ -45,7 +45,7 @@ c  J: Debugging Options
 c   cplex-wrt-model = false, cplex-output = false, cplex-data-chk = true
 c ============================================
 c
-c Instance: /home/wzz/SAT_pro/scaling_results/graph_s1.2.wcnf
+c Instance: scaling_results/graph_s1.2.wcnf
 c Dimacs Vars: 9480
 c Dimacs Clauses: 27692
 c Dimacs Top: 1000000
