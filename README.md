@@ -70,34 +70,87 @@ The main edge types are:
 
 ## MaxHS Installation
 
-This project uses **[MaxHS](https://github.com/fbacchus/MaxHS)** as the MaxSAT solver. MaxHS is included as a Git submodule and must be configured with IBM CPLEX before use.
+This project uses **[MaxHS](https://github.com/fbacchus/MaxHS)** as the MaxSAT solver. MaxHS is included as a Git submodule and must be compiled with IBM CPLEX Optimization Studio before running experiments that require MaxSAT solving.
+
+IBM CPLEX is commercial software and is **not distributed with this repository**. Users should install IBM CPLEX Optimization Studio separately, for example through an academic or institutional license.
 
 ### Prerequisites
 
-- **IBM CPLEX Optimization Studio** — required for linking. Available free under the [IBM Academic Initiative](https://www.ibm.com/academic) for faculty and graduate students in academia.
+- Linux or macOS
+- `git`
+- `make`
+- A C++ compiler supporting C++14
+- `zlib`
+- IBM CPLEX Optimization Studio
 
-### Setup Steps
+On Ubuntu, the basic build tools can be installed with:
 
-1. **Initialize the MaxHS submodule** (from the project root):
+```bash
+sudo apt-get update
+sudo apt-get install build-essential zlib1g-dev
+```
+
+### Step 1: Initialize the MaxHS submodule
+
+From the project root directory:
 
 ```bash
 git submodule update --init --recursive
 ```
 
-2. **Configure and build MaxHS**. Follow the instructions at [https://github.com/fbacchus/MaxHS](https://github.com/fbacchus/MaxHS): set the `LINUX_CPLEXLIBDIR` and `LINUX_CPLEXINCDIR` (or `DARWIN_*` on macOS) variables in the `MaxHS/Makefile`, then run `make`.
+If GitHub is unreachable from the target machine, MaxHS may also be downloaded manually from https://github.com/fbacchus/MaxHS and placed under the project root as `MaxHS/`.
 
-3. The MaxHS binary will be built at `MaxHS/build/release/bin/maxhs`. Pass this path via the `--maxhs-bin` argument (or set it in code) when running the project scripts.
+### Step 2: Install IBM CPLEX Optimization Studio
 
-## Installation
-
-### 1. Create the Conda environment
+Install CPLEX in a directory that the current user can write to. On a headless Linux server, the installer can usually be launched in console mode:
 
 ```bash
-conda env create -f environment.yml
-conda activate bag
+chmod +x cplex_studio2211.linux_x86_64.bin
+./cplex_studio2211.linux_x86_64.bin -i console
 ```
 
-Main dependencies include Python 3.10+, `networkx`, `numpy`, `scipy`, `matplotlib`, `pgmpy`, `torch`, `torch-geometric`, and `python-sat`.
+If the default installation path is not writable, choose a user-local path, for example:
+
+```text
+/home/<user>/ibm/ILOG/CPLEX_Studio2211
+```
+
+After installation, the following paths should exist:
+
+```text
+/home/<user>/ibm/ILOG/CPLEX_Studio2211/cplex/include
+/home/<user>/ibm/ILOG/CPLEX_Studio2211/cplex/lib/x86-64_linux/static_pic
+```
+
+The library directory should contain `libcplex.a`.
+
+### Step 3: Configure the MaxHS Makefile
+
+Edit `MaxHS/Makefile` and set the CPLEX include and library paths.
+
+For Linux:
+
+```makefile
+LINUX_CPLEXLIBDIR = /home/<user>/ibm/ILOG/CPLEX_Studio2211/cplex/lib/x86-64_linux/static_pic
+LINUX_CPLEXINCDIR = /home/<user>/ibm/ILOG/CPLEX_Studio2211/cplex/include
+```
+
+For macOS, edit the corresponding `DARWIN_CPLEXLIBDIR` and `DARWIN_CPLEXINCDIR` variables instead.
+
+### Step 4: Build MaxHS
+
+```bash
+cd MaxHS
+make
+```
+
+During linking, CPLEX may emit a warning similar to:
+
+```text
+Using 'dlopen' in statically linked applications requires at runtime the shared libraries from the glibc version used for linking
+```
+
+This warning is expected when linking against the CPLEX static library and can usually be ignored as long as `make` finishes successfully.
 
 ## Usage
 
