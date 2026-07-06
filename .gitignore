@@ -7,3 +7,6 @@ __pycache__/
 *.PDF
 *.png
 *.json
+
+# Generated WCNF files
+*.wcnf
