@@ -1,0 +1,9 @@
+# Byte-compiled / cache
+__pycache__/
+*.pyc
+
+# Documents, figures and data artifacts (untracked per request)
+*.pdf
+*.PDF
+*.png
+*.json
