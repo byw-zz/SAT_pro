@@ -9,12 +9,7 @@ from graph2sat.graph2sat import export_to_wcnf
 
 MAXHS_BIN = "MaxHS/build/release/bin/maxhs"
 
-FIXED_E_PROBS = [
-    0.02, 0.05, 0.10, 0.12, 0.15, 0.18,
-    0.20, 0.25, 0.30, 0.32, 0.35, 0.38,
-    0.40, 0.45, 0.50, 0.55, 0.60, 0.65,
-    0.70, 0.75, 0.80, 0.85, 0.90, 0.95,
-]
+from generate_graph.config import FIXED_E_PROBS
 
 
 def _get_cnf_converter(sat_type):
@@ -55,7 +50,7 @@ def _run_pipeline(args, bn, values_table, return_stats=False):
     print(f"[1/4] WCNF generated: {wcnf_path}")
 
     from collections import defaultdict
-    from rusult_analysis.one_analysisi import build_value_index
+    from result_analysis.one_analysisi import build_value_index
     vindex = build_value_index(values_table)
     node_type = bn["node_type"]
     children = defaultdict(list)
@@ -106,7 +101,7 @@ def _run_pipeline(args, bn, values_table, return_stats=False):
     maxhs_out = _solve_maxsat(wcnf_path, maxhs_bin, timeout=args.maxhs_timeout + 5, extra_args=extra)
     print(f"[2/4] MaxHS solving complete")
 
-    from rusult_analysis.one_analysisi import (
+    from result_analysis.one_analysisi import (
         parse_maxhs_solution_str,
         interpret_solution,
         compute_objective_from_solution,
@@ -124,7 +119,7 @@ def _run_pipeline(args, bn, values_table, return_stats=False):
 
     if args.show_p_state:
         print("\n=== P Node States ===")
-        from rusult_analysis.one_analysisi import build_value_index, build_adjacency
+        from result_analysis.one_analysisi import build_value_index, build_adjacency
         vindex = build_value_index(values_table)
         parents, children = build_adjacency(bn)
         node_type = bn["node_type"]
@@ -195,38 +190,6 @@ def _run_pipeline(args, bn, values_table, return_stats=False):
         with open(result_path, "w", encoding="utf-8") as f:
             json.dump(result_data, f, ensure_ascii=False, indent=2)
         print(f"       Result saved to: {result_path}")
-
-
-def parse_maxhs_solution_str(maxhs_output, n_vars):
-    """Parse solution vector from MaxHS output (stdout+stderr).
-    Supports two formats:
-      1) DIMACS:   v 1 -2 3 0
-      2) bit string: v 11100101...
-    """
-    assignment = {}
-    for line in maxhs_output.splitlines():
-        line = line.strip()
-        if not line.startswith("v "):
-            continue
-
-        data = line[2:].strip()
-
-        if set(data) <= {"0", "1"} and len(data) > 0:
-            for i, ch in enumerate(data, start=1):
-                if i > n_vars:
-                    break
-                assignment[i] = (ch == "1")
-        else:
-            for tok in data.split():
-                if tok == "0":
-                    continue
-                lit = int(tok)
-                v = abs(lit)
-                if v > n_vars:
-                    continue
-                assignment[v] = (lit > 0)
-
-    return assignment
 
 
 def run_random(args):

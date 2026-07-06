@@ -1,8 +1,7 @@
-"""Genetic algorithm for defense strategy optimization."""
+"""Bayesian network defense strategy exact analysis using pgmpy Variable Elimination."""
 
 import argparse
 import os
-import random
 import sys
 import time
 from collections import defaultdict
@@ -20,22 +19,21 @@ from pgmpy.factors.discrete import TabularCPD
 from pgmpy.inference import VariableElimination
 
 
-FIXED_E_PROBS = [
-    0.02, 0.05, 0.10, 0.12, 0.15, 0.18,
-    0.20, 0.25, 0.30, 0.32, 0.35, 0.38,
-    0.40, 0.45, 0.50, 0.55, 0.60, 0.65,
-    0.70, 0.75, 0.80, 0.85, 0.90, 0.95,
-]
+from generate_graph.config import FIXED_E_PROBS
 
 
 def build_c_cpd(node, forced_zero_C):
-    """C node CPD"""
+    """C node CPD: root node with prior"""
     if node in forced_zero_C:
         values = [[1.0], [0.0]]
     else:
         values = [[0.0], [1.0]]
+
     return TabularCPD(
-        variable=node, variable_card=2, values=values, state_names={node: [0, 1]},
+        variable=node,
+        variable_card=2,
+        values=values,
+        state_names={node: [0, 1]},
     )
 
 
@@ -43,20 +41,33 @@ def build_e_cpd(node, parents):
     """E node CPD: strict AND"""
     if not parents:
         return TabularCPD(
-            variable=node, variable_card=2, values=[[1.0], [0.0]], state_names={node: [0, 1]},
+            variable=node,
+            variable_card=2,
+            values=[[1.0], [0.0]],
+            state_names={node: [0, 1]},
         )
+
     parent_assignments = list(product([0, 1], repeat=len(parents)))
-    row0, row1 = [], []
+    row0 = []
+    row1 = []
+
     for assign in parent_assignments:
         p1 = 1.0 if all(x == 1 for x in assign) else 0.0
-        row0.append(1.0 - p1)
+        p0 = 1.0 - p1
+        row0.append(p0)
         row1.append(p1)
+
     state_names = {node: [0, 1]}
     for p in parents:
         state_names[p] = [0, 1]
+
     return TabularCPD(
-        variable=node, variable_card=2, values=[row0, row1],
-        evidence=parents, evidence_card=[2] * len(parents), state_names=state_names,
+        variable=node,
+        variable_card=2,
+        values=[row0, row1],
+        evidence=parents,
+        evidence_card=[2] * len(parents),
+        state_names=state_names,
     )
 
 
@@ -64,31 +75,47 @@ def build_p_cpd(node, parents, vindex):
     """P node CPD: noisy-OR"""
     if not parents:
         return TabularCPD(
-            variable=node, variable_card=2, values=[[0.0], [1.0]], state_names={node: [0, 1]},
+            variable=node,
+            variable_card=2,
+            values=[[0.0], [1.0]],
+            state_names={node: [0, 1]},
         )
+
     parent_assignments = list(product([0, 1], repeat=len(parents)))
-    row0, row1 = [], []
+    row0 = []
+    row1 = []
+
     for assign in parent_assignments:
         prob_not_active = 1.0
         for e_node, e_val in zip(parents, assign):
             e_prob = (vindex.get(e_node, {}) or {}).get("E_prob", 0.0) or 0.0
             prob_not_active *= (1.0 - e_prob) ** e_val
-        p1 = max(0.0, min(1.0, 1.0 - prob_not_active))
-        row0.append(1.0 - p1)
+
+        p1 = 1.0 - prob_not_active
+        p1 = max(0.0, min(1.0, p1))
+        p0 = 1.0 - p1
+        row0.append(p0)
         row1.append(p1)
+
     state_names = {node: [0, 1]}
     for p in parents:
         state_names[p] = [0, 1]
+
     return TabularCPD(
-        variable=node, variable_card=2, values=[row0, row1],
-        evidence=parents, evidence_card=[2] * len(parents), state_names=state_names,
+        variable=node,
+        variable_card=2,
+        values=[row0, row1],
+        evidence=parents,
+        evidence_card=[2] * len(parents),
+        state_names=state_names,
     )
 
 
 def build_pgmpy_model(node_type, parents_f, vindex, forced_zero_C, all_remaining_nodes):
     """Build pgmpy DiscreteBayesianNetwork"""
     node_set = set(all_remaining_nodes)
-    edges, cpds = [], []
+    edges = []
+    cpds = []
 
     model = DiscreteBayesianNetwork()
     model.add_nodes_from(all_remaining_nodes)
@@ -103,6 +130,7 @@ def build_pgmpy_model(node_type, parents_f, vindex, forced_zero_C, all_remaining
     for node in all_remaining_nodes:
         ntype = node_type.get(node, "")
         parents = [p for p in parents_f.get(node, []) if p in node_set]
+
         if ntype == "C":
             cpd = build_c_cpd(node, forced_zero_C)
         elif ntype == "E":
@@ -111,6 +139,7 @@ def build_pgmpy_model(node_type, parents_f, vindex, forced_zero_C, all_remaining
             cpd = build_p_cpd(node, parents, vindex)
         else:
             continue
+
         cpds.append(cpd)
 
     model.add_cpds(*cpds)
@@ -118,22 +147,34 @@ def build_pgmpy_model(node_type, parents_f, vindex, forced_zero_C, all_remaining
     return model
 
 
-def ve_exact_inference(node_type, parents_f, vindex, query_nodes,
-                       forced_zero_C, all_remaining_nodes):
+def ve_exact_inference_pgmpy(node_type, parents_f, vindex, query_nodes,
+                             forced_zero_C, all_remaining_nodes):
     """Run pgmpy VariableElimination"""
-    model = build_pgmpy_model(node_type, parents_f, vindex, forced_zero_C, all_remaining_nodes)
+    model = build_pgmpy_model(
+        node_type=node_type,
+        parents_f=parents_f,
+        vindex=vindex,
+        forced_zero_C=forced_zero_C,
+        all_remaining_nodes=all_remaining_nodes,
+    )
+
     infer = VariableElimination(model)
     marginals = {}
+
     for q in query_nodes:
         result = infer.query(variables=[q], show_progress=False)
-        marginals[q] = float(result.values[1])
+        values = result.values
+        marginals[q] = float(values[1])
+
     return marginals
 
 
 def run_exact_analysis(bn, values_table, D_state=None):
     """Execute exact probability analysis."""
     node_type = bn["node_type"]
+
     reversed_edges = [(v, u) for u, v in bn["edges"]]
+
     parents = defaultdict(list)
     children = defaultdict(list)
     for u, v in reversed_edges:
@@ -151,11 +192,16 @@ def run_exact_analysis(bn, values_table, D_state=None):
 
     removed = set(bn.get("D", []))
     remaining_set = set(bn["P"] + bn["E"] + bn["C"] + bn["D"]) - removed
+
     rem_P = [p for p in bn["P"] if p in remaining_set]
     rem_E = [e for e in bn["E"] if e in remaining_set]
     rem_C = [c for c in bn["C"] if c in remaining_set]
 
-    filtered_edges = [(u, v) for u, v in reversed_edges if u in remaining_set and v in remaining_set]
+    filtered_edges = [
+        (u, v) for u, v in reversed_edges
+        if u in remaining_set and v in remaining_set
+    ]
+
     parents_f = defaultdict(list)
     for u, v in filtered_edges:
         parents_f[v].append(u)
@@ -163,9 +209,13 @@ def run_exact_analysis(bn, values_table, D_state=None):
     vindex = {row["node"]: row for row in values_table}
 
     t0 = time.time()
-    marginals = ve_exact_inference(
-        node_type=node_type, parents_f=parents_f, vindex=vindex, query_nodes=rem_P,
-        forced_zero_C=forced_zero_C, all_remaining_nodes=list(remaining_set),
+    marginals = ve_exact_inference_pgmpy(
+        node_type=node_type,
+        parents_f=parents_f,
+        vindex=vindex,
+        query_nodes=rem_P,
+        forced_zero_C=forced_zero_C,
+        all_remaining_nodes=list(remaining_set),
     )
     ve_time = time.time() - t0
 
@@ -185,6 +235,7 @@ def run_exact_analysis(bn, values_table, D_state=None):
         p_loss = row_p.get("P_loss", 0.0) or 0.0
         p_benefit = row_p.get("P_benefit", 0.0) or 0.0
         p_marg = marginals.get(p, 0.0)
+
         total_P_expected_loss += p_marg * p_loss
         total_P_expected_gain += (1.0 - p_marg) * p_benefit
 
@@ -202,7 +253,9 @@ def run_exact_analysis(bn, values_table, D_state=None):
         "P_expected_gain": total_P_expected_gain,
         "D_cost": total_D_cost,
         "P_marginals": dict(marginals),
-        "remaining_nodes": {"P": rem_P, "E": rem_E, "C": rem_C, "D": []},
+        "remaining_nodes": {
+            "P": rem_P, "E": rem_E, "C": rem_C, "D": [],
+        },
         "D_state": dict(D_state),
         "forced_zero_C": list(forced_zero_C),
         "marginals": dict(marginals),
@@ -210,122 +263,47 @@ def run_exact_analysis(bn, values_table, D_state=None):
     }
 
 
-def binary_tournament_select(evaluated_population, rng):
-    """Binary tournament selection: select better of two random individuals"""
-    if not evaluated_population:
-        raise ValueError("evaluated_population cannot be empty")
-    a = rng.choice(evaluated_population)
-    b = rng.choice(evaluated_population)
-    if a["result"]["objective"] >= b["result"]["objective"]:
-        return a
-    return b
-
-
-def single_point_crossover(parent1, parent2, crossover_prob, rng):
-    if len(parent1) != len(parent2):
-        raise ValueError("Parent length mismatch")
-    n = len(parent1)
-    if n <= 1 or rng.random() >= crossover_prob:
-        return tuple(parent1), tuple(parent2)
-    point = rng.randint(1, n - 1)
-    child1 = tuple(list(parent1[:point]) + list(parent2[point:]))
-    child2 = tuple(list(parent2[:point]) + list(parent1[point:]))
-    return child1, child2
-
-
-def mutate_bits(bits, mutation_prob, rng):
-    mutated = []
-    for bit in bits:
-        if rng.random() < mutation_prob:
-            mutated.append(1 - int(bit))
-        else:
-            mutated.append(int(bit))
-    return tuple(mutated)
-
-
-def find_best_defense_strategy_ga(
-    bn, values_table,
-    population_size=100, genmax=50,
-    crossover_prob=0.8, mutation_prob=0.01, seed=42,
-):
-    """Search for best defense strategy using genetic algorithm"""
-    rng = random.Random(seed)
+def find_best_defense_strategy(bn, values_table, max_enum=1 << 15):
+    """Enumerate all defense combinations to find best strategy"""
     D_nodes = bn.get("D", [])
     nD = len(D_nodes)
+    n_strategies = 1 << nD
 
-    if nD == 0:
-        result = run_exact_analysis(bn, values_table, D_state={})
-        return {
-            "best_objective": result["objective"],
-            "best_D_state": {},
-            "best_result": result,
-            "final_population": [],
-            "history": [result],
-            "unique_evaluated": 1,
-            "total_time_s": 0.0,
-        }
+    if n_strategies > max_enum:
+        print(f"[WARNING] nD={nD}, strategies={n_strategies} > {max_enum},"
+              f" enumeration may be slow (O(2^{nD}))", flush=True)
 
-    cache = {}
-
-    def evaluate(bits):
-        key = tuple(int(x) for x in bits)
-        if key not in cache:
-            D_state = {d: bool(key[i]) for i, d in enumerate(D_nodes)}
-            cache[key] = run_exact_analysis(bn, values_table, D_state=D_state)
-        return {
-            "genes": key,
-            "D_state": {d: bool(key[i]) for i, d in enumerate(D_nodes)},
-            "result": cache[key],
-        }
-
-    population = [tuple(rng.randint(0, 1) for _ in range(nD)) for _ in range(population_size)]
-    history = []
-    best = None
+    best_obj = float("-inf")
+    best_D_state = None
+    best_result = None
+    all_results = []
 
     t_start = time.time()
-    for gen in range(genmax + 1):
-        evaluated = [evaluate(bits) for bits in population]
-        history.extend(item["result"] for item in evaluated)
+    for bits in range(n_strategies):
+        D_state = {d: bool((bits >> i) & 1) for i, d in enumerate(D_nodes)}
+        result = run_exact_analysis(bn, values_table, D_state=D_state)
+        all_results.append(result)
 
-        gen_best = max(evaluated, key=lambda x: x["result"]["objective"])
-        if best is None or gen_best["result"]["objective"] > best["result"]["objective"]:
-            best = gen_best
+        if result["objective"] > best_obj:
+            best_obj = result["objective"]
+            best_D_state = D_state
+            best_result = result
 
-        mating_pool_size = max(1, population_size // 2)
-        mating_pool = [binary_tournament_select(evaluated, rng) for _ in range(mating_pool_size)]
-
-        offspring = []
-        while len(offspring) < mating_pool_size:
-            p1 = rng.choice(mating_pool)["genes"]
-            p2 = rng.choice(mating_pool)["genes"]
-            c1, c2 = single_point_crossover(p1, p2, crossover_prob, rng)
-            c1 = mutate_bits(c1, mutation_prob, rng)
-            offspring.append(c1)
-            if len(offspring) >= mating_pool_size:
-                break
-            c2 = mutate_bits(c2, mutation_prob, rng)
-            offspring.append(c2)
-
-        population = [ind["genes"] for ind in mating_pool] + offspring[:mating_pool_size]
-
-        if (gen + 1) % 10 == 0 or gen == genmax:
-            print(
-                f"  [GA] generation {gen:>3}/{genmax} | "
-                f"best objective = {best['result']['objective']:.4f} | "
-                f"unique evaluated = {len(cache)}",
-                flush=True,
-            )
+        if (bits + 1) % 100 == 0:
+            elapsed = time.time() - t_start
+            rate = (bits + 1) / elapsed if elapsed > 0 else 0
+            eta = (n_strategies - bits - 1) / rate if rate > 0 else 0
+            print(f"  Progress {bits+1}/{n_strategies} "
+                  f"({elapsed:.1f}s elapsed, ~{eta:.1f}s remaining)", flush=True)
 
     total_time = time.time() - t_start
-    final_population = [evaluate(bits) for bits in population]
 
     return {
-        "best_objective": best["result"]["objective"],
-        "best_D_state": best["D_state"],
-        "best_result": best["result"],
-        "final_population": final_population,
-        "history": history,
-        "unique_evaluated": len(cache),
+        "best_objective": best_obj,
+        "best_D_state": best_D_state,
+        "best_result": best_result,
+        "all_results": all_results,
+        "total_strategies": n_strategies,
         "total_time_s": total_time,
     }
 
@@ -334,7 +312,13 @@ def print_comparison_table(all_results):
     print("\n" + "=" * 90)
     print(f"{'#':>3} | {'D_state':<30} | {'C_benefit':>10} | {'P_loss':>10} | {'D_cost':>8} | {'Objective':>12}")
     print("-" * 90)
-    sorted_results = sorted(enumerate(all_results), key=lambda x: x[1]["objective"], reverse=True)
+
+    sorted_results = sorted(
+        enumerate(all_results),
+        key=lambda x: x[1]["objective"],
+        reverse=True
+    )
+
     for rank, (idx, r) in enumerate(sorted_results):
         d_str = str({d: int(v) for d, v in r["D_state"].items()})
         d_str = d_str[:28] + ".." if len(d_str) > 30 else d_str
@@ -342,18 +326,19 @@ def print_comparison_table(all_results):
         print(f"{marker}{idx:>2} | {d_str:<30} | "
               f"{r['C_benefit']:>10.2f} | {r['P_expected_loss']:>10.2f} | "
               f"{r['D_cost']:>8.2f} | {r['objective']:>12.4f}")
+
     print("=" * 90)
 
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Bayesian network defense strategy exact analysis (pgmpy VE)",
+        description="Bayesian network defense strategy exact analysis (pgmpy Variable Elimination)",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
     parser.add_argument("--type", "-t", choices=["random", "structured"],
                         required=True, help="Graph generation type")
     parser.add_argument("--seed", "-s", type=int, default=42)
-    parser.add_argument("--nP", type=int, default=5, help="P node count")
+    parser.add_argument("--nP", type=int, default=5, help="P node count (VE is slow, suggest <= 10)")
     parser.add_argument("--nC", type=int, default=None)
     parser.add_argument("--nD", type=int, default=None)
 
@@ -377,10 +362,8 @@ def main():
     parser.add_argument("--d-cost-lo", type=float, default=50)
     parser.add_argument("--d-cost-hi", type=float, default=100)
 
-    parser.add_argument("--population-size", type=int, default=100, help="GA population size N")
-    parser.add_argument("--genmax", type=int, default=50, help="Max generations GenMAX")
-    parser.add_argument("--crossover-prob", type=float, default=0.8, help="Crossover probability")
-    parser.add_argument("--mutation-prob", type=float, default=0.01, help="Bit mutation probability")
+    parser.add_argument("--enumerate", "-e", action="store_true",
+                        help="Enumerate all D strategies (2^nD, suggest nD <= 15)")
     parser.add_argument("--no-level-scaling", action="store_true")
     parser.add_argument("--p-alpha-max", type=float, default=0.8)
     parser.add_argument("--cd-beta-max", type=float, default=0.5)
@@ -432,6 +415,35 @@ def main():
     print(f"Graph type: {args.type}  |  Seed: {args.seed}")
     print(f"P={len(bn['P'])}  E={len(bn['E'])}  C={len(bn['C'])}  D={len(bn['D'])}  edges={len(bn['edges'])}")
     print("=" * 65)
+
+    if args.enumerate:
+        print(f"\n[ENUMERATION MODE] nD={len(bn.get('D',[]))}, strategies=2^{len(bn.get('D',[]))}={1<<len(bn.get('D',[]))}", flush=True)
+        enum_result = find_best_defense_strategy(bn, values_table)
+
+        print(f"\nSearch complete! Total time: {enum_result['total_time_s']:.2f}s")
+        print_comparison_table(enum_result["all_results"])
+
+        br = enum_result["best_result"]
+        bd = enum_result["best_D_state"]
+        defended_nodes = [d for d, v in bd.items() if v]
+
+        print(f"\n* Best defense combination ({len(defended_nodes)} nodes):")
+        print(f"  Defended nodes: {defended_nodes}")
+        print(f"  C_benefit       = {br['C_benefit']:.4f}")
+        print(f"  P_expected_loss = {br['P_expected_loss']:.4f}")
+        print(f"  P_expected_gain = {br['P_expected_gain']:.4f}")
+        print(f"  D_cost          = {br['D_cost']:.4f}")
+        print(f"  ─────────────────────")
+        print(f"  objective       = {br['objective']:.4f}")
+
+        if br.get("_ve_time_ms"):
+            print(f"\nVE single run: {br['_ve_time_ms']:.2f}ms")
+        print(f"Forced-zero C nodes: {br['forced_zero_C']}")
+
+        print(f"\nP node marginal probabilities P(P=1):")
+        for p, prob in sorted(br["P_marginals"].items()):
+            print(f"  {p}: {prob:.6f}")
+        return
 
     result = run_exact_analysis(bn, values_table, D_state=None)
 

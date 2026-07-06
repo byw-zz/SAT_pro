@@ -63,7 +63,7 @@ def bn_to_maxsat_cnf(bn, values_table, initial_true_nodes=None, initial_false_no
         c_children = [v for v in children[e] if node_type[v] == "C"]
         p_children = [v for v in children[e] if node_type[v] == "P"]
 
-        # Rule 1: p ∪ ¬c ∪ ¬p'
+        # Rule 1: p_in ∨ ¬e  (若 e 被激活，则其唯一前置特权 p_in 必为真)
         clause1 = [v_p_in]
         clause1 += [-v_e]
         hard_clauses.append(clause1)

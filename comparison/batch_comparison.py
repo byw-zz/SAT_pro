@@ -14,7 +14,7 @@ from generate_graph.structured_graph import generate_bn_from_root_and_reverse
 from generate_graph.numerical_generation import generate_node_values as gen_random_values
 from generate_graph.number_generation import generate_node_values as gen_structured_values
 
-from rusult_analysis.exact_analysis import run_exact_analysis
+from result_analysis.exact_analysis import run_exact_analysis
 
 from comparison.bp_core import (
     MAXHS_BIN,

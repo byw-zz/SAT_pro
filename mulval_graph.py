@@ -618,44 +618,7 @@ specified_d_cost = {
     "D12": 1500,
 }
 
-def parse_maxhs_solution_str(maxhs_output, n_vars):
-    """Parse solution vector from MaxHS output."""
-    assignment = {}
-    for line in maxhs_output.splitlines():
-        line = line.strip()
-        if line.startswith("o "):
-            parts = line.split()
-            for i, part in enumerate(parts):
-                if part == "v" and i + 1 < len(parts):
-                    data = " ".join(parts[i+1:])
-                    for tok in data.split():
-                        if tok == "0":
-                            continue
-                        try:
-                            lit = int(tok)
-                            v = abs(lit)
-                            if v <= n_vars:
-                                assignment[v] = (lit > 0)
-                        except ValueError:
-                            continue
-                    return assignment
-        elif line.startswith("v "):
-            data = line[2:].strip()
-            if set(data) <= {"0", "1"} and len(data) > 0:
-                for i, ch in enumerate(data, start=1):
-                    if i > n_vars:
-                        break
-                    assignment[i] = (ch == "1")
-            else:
-                for tok in data.split():
-                    if tok == "0":
-                        continue
-                    lit = int(tok)
-                    v = abs(lit)
-                    if v > n_vars:
-                        continue
-                    assignment[v] = (lit > 0)
-    return assignment
+from common import parse_maxhs_solution_str
 
 
 def interpret_solution(bn, cnf_data, assignment):

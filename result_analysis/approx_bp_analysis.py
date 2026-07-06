@@ -27,12 +27,7 @@ from generate_graph.numerical_generation import generate_node_values as gen_rand
 from generate_graph.number_generation import generate_node_values as gen_structured_values
 
 
-FIXED_E_PROBS = [
-    0.02, 0.05, 0.10, 0.12, 0.15, 0.18,
-    0.20, 0.25, 0.30, 0.32, 0.35, 0.38,
-    0.40, 0.45, 0.50, 0.55, 0.60, 0.65,
-    0.70, 0.75, 0.80, 0.85, 0.90, 0.95,
-]
+from generate_graph.config import FIXED_E_PROBS
 
 
 def _normalize2(msg):
