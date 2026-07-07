@@ -24,6 +24,16 @@ from comparison.bp_core import (
     extract_D_state_from_solution,
     compute_objective_bp_style,
 )
+from comparison.khouzani_baseline import find_best_defense_khouzani
+
+
+def _winner(obj_a, name_a, obj_b, name_b, eps=1e-9):
+    """Higher objective wins; TIE within eps. Returns None if either is missing."""
+    if obj_a is None or obj_b is None:
+        return None
+    if abs(obj_a - obj_b) <= eps:
+        return "TIE"
+    return name_a if obj_a > obj_b else name_b
 
 
 def generate_structured_graph_with_np_range(args, rng, graph_id):
@@ -154,6 +164,25 @@ def run_single_comparison(bn, values_table, args, graph_id, top_n=10):
         if maxsat_rank_in_ga_all is not None and maxsat_rank_in_ga_all <= top_n:
             maxsat_rank_in_ga_top_n = maxsat_rank_in_ga_all
 
+    # --- Khouzani MILP interdiction baseline (3rd method) ---
+    # Scored with the SAME per-graph evaluator (VE if use_ve else BP) as GA/MaxSAT.
+    # big-M dual, single-thread (deterministic), 60s/solve cap; n_budget=10.
+    t_kh = time.time()
+    kh_result = find_best_defense_khouzani(
+        bn, values_table, n_budget=10,
+        eval_mode=("exact" if use_ve else "bp"),
+        method="bigm", threads=1, milp_time_limit=60,
+    )
+    khouzani_solve_time = time.time() - t_kh
+    khouzani_D_state = kh_result["best_D_state"]
+    khouzani_defended = sorted([d for d, v in khouzani_D_state.items() if v])
+    khouzani_objective = kh_result["best_objective"]
+
+    khouzani_vs_ga = _winner(khouzani_objective, "Khouzani", bp_eval["objective"], "GA")
+    khouzani_vs_maxsat = (None if maxsat_timeout
+                          else _winner(khouzani_objective, "Khouzani",
+                                       maxsat_bp_eval["objective"], "MaxSAT"))
+
     bp_defended = sorted([d for d, v in bp_D_state.items() if v])
     maxsat_defended = sorted([d for d, v in maxsat_D_state.items() if v]) if maxsat_D_state else []
 
@@ -199,6 +228,15 @@ def run_single_comparison(bn, values_table, args, graph_id, top_n=10):
         "maxsat_defended": maxsat_defended,
         "maxsat_defended_count": len(maxsat_defended),
 
+        "khouzani_time_s": khouzani_solve_time,
+        "khouzani_milp_time_s": kh_result["milp_time_s"],
+        "khouzani_objective": khouzani_objective,
+        "khouzani_defended": khouzani_defended,
+        "khouzani_defended_count": len(khouzani_defended),
+        "khouzani_milp_optimal": f"{kh_result['n_milp_optimal']}/{kh_result['n_milp_solves']}",
+        "khouzani_vs_ga": khouzani_vs_ga,
+        "khouzani_vs_maxsat": khouzani_vs_maxsat,
+
         "strategies_same": strategies_same,
         "strategies_different": strategies_different,
         "winner": winner,
@@ -235,14 +273,29 @@ def summarize_results(results):
         "num_timeout": 0,
         "avg_bp_time_s": None,
         "avg_maxsat_time_s": None,
+        "avg_khouzani_time_s": None,
+        # Khouzani win/tie/loss (higher objective = better)
+        "khouzani_vs_ga": {"kh_win": 0, "tie": 0, "kh_loss": 0},
+        "khouzani_vs_maxsat": {"kh_win": 0, "tie": 0, "kh_loss": 0},
         "ga_better_cases": [],
     }
 
     bp_times = []
     sat_times = []
+    kh_times = []
 
     for r in results:
         bp_times.append(r["bp_time_s"])
+        if r.get("khouzani_time_s") is not None:
+            kh_times.append(r["khouzani_time_s"])
+        for key, other in (("khouzani_vs_ga", "GA"), ("khouzani_vs_maxsat", "MaxSAT")):
+            w = r.get(key)
+            if w == "Khouzani":
+                summary[key]["kh_win"] += 1
+            elif w == "TIE":
+                summary[key]["tie"] += 1
+            elif w == other:
+                summary[key]["kh_loss"] += 1
         if not r["maxsat_timeout"] and r["maxsat_time_s"] is not None:
             sat_times.append(r["maxsat_time_s"])
         else:
@@ -273,6 +326,8 @@ def summarize_results(results):
         summary["avg_bp_time_s"] = sum(bp_times) / len(bp_times)
     if sat_times:
         summary["avg_maxsat_time_s"] = sum(sat_times) / len(sat_times)
+    if kh_times:
+        summary["avg_khouzani_time_s"] = sum(kh_times) / len(kh_times)
 
     return summary
 
