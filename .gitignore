@@ -10,3 +10,6 @@ __pycache__/
 
 # Generated WCNF files
 *.wcnf
+
+# Run logs
+*.log
