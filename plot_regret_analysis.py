@@ -15,7 +15,7 @@ import pandas as pd
 
 INK, MUTED, GRID, SURF = "#0b0b0b", "#898781", "#e1e0d9", "#fcfcfb"
 PARAMS = ["C_benefit", "P_loss", "D_cost", "E_prob"]
-PCOL = {"C_benefit": "#2a78d6", "P_loss": "#1baf7a", "D_cost": "#eda100", "E_prob": "#008300"}
+PCOL = {"C_benefit": "#2a78d6", "P_loss": "#e34948", "D_cost": "#eda100", "E_prob": "#008300"}
 GROUPS = [
     ("structured_12_18", "structured\nnP12-18"),
     ("structured_151_199", "structured\nnP151-199"),
@@ -61,7 +61,7 @@ def grouped(ax, key, log, floor=None):
         ax.bar(x + offs[p], heights, w, bottom=(base if not log else None),
                color=PCOL[p], label=p, edgecolor=SURF, linewidth=0.5)
     ax.set_xticks(x); ax.set_xticklabels(glabs)
-    ax.grid(axis="y", color=GRID, lw=0.6, zorder=0)
+    ax.grid(False, which="both")
     if log:
         ax.set_yscale("log")
 
