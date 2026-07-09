@@ -23,10 +23,10 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # dataset order: (label, khouzani_out file, stored dataset file)
 DSETS = [
-    ("structured\nsmall [12,17]", "comparison/khouzani_out_s_small.json", "structured_12_17_100graphs.json"),
-    ("random\nsmall (nP=10)",     "comparison/khouzani_out_r_small.json", "random_10_100graphs.json"),
-    ("structured\nlarge [151,199]","comparison/khouzani_out_s_large.json","structured_151_199_10graphs.json"),
-    ("random\nlarge (nP=100)",    "comparison/khouzani_out_r_large.json", "random_100_10graphs.json"),
+    ("structured\nsmall",  "comparison/khouzani_out_s_small.json", "structured_12_17_100graphs.json"),
+    ("random\nsmall",      "comparison/khouzani_out_r_small.json", "random_10_100graphs.json"),
+    ("structured\nmedium", "comparison/khouzani_out_s_large.json", "structured_151_199_10graphs.json"),
+    ("random\nmedium",     "comparison/khouzani_out_r_large.json", "random_100_10graphs.json"),
 ]
 
 # palette (teal / yellow / coral)
@@ -133,9 +133,7 @@ def main():
     axB.tick_params(colors=MUTED, length=0)
     axB.legend(loc="upper left", frameon=False, fontsize=8.5, handlelength=1.1)
 
-    fig.suptitle("MaxSAT (exact)  vs  GA-BP  vs  Khouzani-MILP baseline  —  four attack-graph datasets",
-                 fontsize=12.5, color=INK, y=1.02)
-    fig.tight_layout(rect=[0, 0, 1, 0.98])
+    fig.tight_layout()
     out_png = os.path.join(ROOT, "comparison", "khouzani_comparison.png")
     out_pdf = os.path.join(ROOT, "comparison", "khouzani_comparison.pdf")
     fig.savefig(out_png, dpi=170, bbox_inches="tight", facecolor=SURF)
