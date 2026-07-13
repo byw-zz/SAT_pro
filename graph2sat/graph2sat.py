@@ -153,7 +153,6 @@ def bn_to_maxsat_cnf(bn, values_table, initial_true_nodes=None, initial_false_no
     for p in bn["P"]:
         row_p = value_dict.get(p, {})
         w_p = row_p.get("P_loss", None)
-        w_p2 = row_p.get("P_benefit", None)
         if w_p is None:
             continue
 
@@ -182,7 +181,6 @@ def bn_to_maxsat_cnf(bn, values_table, initial_true_nodes=None, initial_false_no
                 P_comp = 1.0 - prod
 
             reward = round((P_comp) * float(w_p), 2)
-            reward2 = round(P_comp * float(w_p2), 2)
 
             clause = []
             for b, e in zip(bits, e_children):

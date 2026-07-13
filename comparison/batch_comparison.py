@@ -52,7 +52,7 @@ def generate_structured_graph_with_np_range(args, rng, graph_id):
 
     values_table = gen_structured_values(
         bn, seed=args.seed + graph_id, fixed_e_probs=FIXED_E_PROBS,
-        p_loss_range=(50, 500), p_benefit_range=(5, 80),
+        p_loss_range=(50, 500),
         c_benefit_range=(10, 50), d_cost_range=(50, 100),
         use_level_scaling=not args.no_level_scaling,
         p_alpha_max=args.p_alpha_max,
@@ -71,7 +71,7 @@ def generate_random_graph(args, graph_id):
     )
     values_table = gen_random_values(
         bn, seed=args.seed + graph_id, fixed_e_probs=FIXED_E_PROBS,
-        p_loss_range=(50, 500), p_benefit_range=(5, 80),
+        p_loss_range=(50, 500),
         c_benefit_range=(10, 50), d_cost_range=(50, 100),
     )
     return bn, values_table

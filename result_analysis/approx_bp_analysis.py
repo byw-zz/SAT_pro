@@ -256,7 +256,6 @@ def run_bp_analysis(bn, values_table, D_state=None, bp_max_iters=10, bp_damping=
 
     total_C_benefit = 0.0
     total_P_expected_loss = 0.0
-    total_P_expected_gain = 0.0
     total_D_cost = 0.0
 
     for c in rem_C:
@@ -268,10 +267,8 @@ def run_bp_analysis(bn, values_table, D_state=None, bp_max_iters=10, bp_damping=
     for p in rem_P:
         row_p = vindex.get(p, {})
         p_loss = row_p.get("P_loss", 0.0) or 0.0
-        p_benefit = row_p.get("P_benefit", 0.0) or 0.0
         p_marg = marginals.get(p, 0.0)
         total_P_expected_loss += p_marg * p_loss
-        total_P_expected_gain += (1.0 - p_marg) * p_benefit
 
     for d, defended in D_state.items():
         if defended:
@@ -284,7 +281,6 @@ def run_bp_analysis(bn, values_table, D_state=None, bp_max_iters=10, bp_damping=
         "objective": objective,
         "C_benefit": total_C_benefit,
         "P_expected_loss": total_P_expected_loss,
-        "P_expected_gain": total_P_expected_gain,
         "D_cost": total_D_cost,
         "P_marginals": dict(marginals),
         "remaining_nodes": {"P": rem_P, "E": rem_E, "C": rem_C, "D": []},
@@ -435,8 +431,6 @@ def main():
 
     parser.add_argument("--p-loss-lo", type=float, default=50)
     parser.add_argument("--p-loss-hi", type=float, default=500)
-    parser.add_argument("--p-benefit-lo", type=float, default=5)
-    parser.add_argument("--p-benefit-hi", type=float, default=80)
     parser.add_argument("--c-benefit-lo", type=float, default=10)
     parser.add_argument("--c-benefit-hi", type=float, default=50)
     parser.add_argument("--d-cost-lo", type=float, default=50)
@@ -470,7 +464,6 @@ def main():
         values_table = gen_random_values(
             bn, seed=args.seed, fixed_e_probs=FIXED_E_PROBS,
             p_loss_range=(args.p_loss_lo, args.p_loss_hi),
-            p_benefit_range=(args.p_benefit_lo, args.p_benefit_hi),
             c_benefit_range=(args.c_benefit_lo, args.c_benefit_hi),
             d_cost_range=(args.d_cost_lo, args.d_cost_hi),
         )
@@ -487,7 +480,6 @@ def main():
         values_table = gen_structured_values(
             bn, seed=args.seed, fixed_e_probs=FIXED_E_PROBS,
             p_loss_range=(args.p_loss_lo, args.p_loss_hi),
-            p_benefit_range=(args.p_benefit_lo, args.p_benefit_hi),
             c_benefit_range=(args.c_benefit_lo, args.c_benefit_hi),
             d_cost_range=(args.d_cost_lo, args.d_cost_hi),
             use_level_scaling=not args.no_level_scaling,
@@ -529,7 +521,6 @@ def main():
     print(f"  Defended nodes: {defended_nodes}")
     print(f"  C_benefit       = {br['C_benefit']:.4f}")
     print(f"  P_expected_loss = {br['P_expected_loss']:.4f}")
-    print(f"  P_expected_gain = {br['P_expected_gain']:.4f}")
     print(f"  D_cost          = {br['D_cost']:.4f}")
     print(f"  objective       = {br['objective']:.4f}")
     print(f"  BP time         = {br['_bp_time_ms']:.2f}ms")

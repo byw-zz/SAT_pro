@@ -46,7 +46,6 @@ def generate_bn_and_values(params, seed):
         seed=seed,
         fixed_e_probs=FIXED_E_PROBS,
         p_loss_range=(50, 500),
-        p_benefit_range=(5, 80),
         c_benefit_range=(10, 50),
         d_cost_range=(50, 100),
     )

@@ -168,7 +168,6 @@ def run_exact_analysis(bn, values_table, D_state=None):
 
     total_C_benefit = 0.0
     total_P_expected_loss = 0.0
-    total_P_expected_gain = 0.0
     total_D_cost = 0.0
 
     for c in rem_C:
@@ -180,10 +179,8 @@ def run_exact_analysis(bn, values_table, D_state=None):
     for p in rem_P:
         row_p = vindex.get(p, {})
         p_loss = row_p.get("P_loss", 0.0) or 0.0
-        p_benefit = row_p.get("P_benefit", 0.0) or 0.0
         p_marg = marginals.get(p, 0.0)
         total_P_expected_loss += p_marg * p_loss
-        total_P_expected_gain += (1.0 - p_marg) * p_benefit
 
     for d, defended in D_state.items():
         if defended:
@@ -196,7 +193,6 @@ def run_exact_analysis(bn, values_table, D_state=None):
         "objective": objective,
         "C_benefit": total_C_benefit,
         "P_expected_loss": total_P_expected_loss,
-        "P_expected_gain": total_P_expected_gain,
         "D_cost": total_D_cost,
         "P_marginals": dict(marginals),
         "remaining_nodes": {"P": rem_P, "E": rem_E, "C": rem_C, "D": []},
@@ -344,7 +340,6 @@ def main():
         print(f"  Defended nodes: {sorted(defended_nodes)}")
         print(f"  C_benefit        = {br['C_benefit']:.4f}")
         print(f"  P_expected_loss  = {br['P_expected_loss']:.4f}")
-        print(f"  P_expected_gain  = {br['P_expected_gain']:.4f}")
         print(f"  D_cost           = {br['D_cost']:.4f}")
         print(f"  objective        = {br['objective']:.4f}")
 
@@ -365,7 +360,6 @@ def main():
         print(f"\nObjective:")
         print(f"  C_benefit        = {result['C_benefit']:.4f}")
         print(f"  P_expected_loss  = {result['P_expected_loss']:.4f}")
-        print(f"  P_expected_gain  = {result['P_expected_gain']:.4f}")
         print(f"  D_cost           = {result['D_cost']:.4f}")
         print(f"  objective        = {result['objective']:.4f}")
 

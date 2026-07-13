@@ -70,7 +70,7 @@ The main edge types are:
 
 ## Dependencies
 
-The Python dependencies are specified in `environment.yml`. Main packages include Python 3.10+, `networkx`, `numpy`, `scipy`, `matplotlib`, `pgmpy`, `torch`, `torch-geometric`, and `python-sat`.
+The Python dependencies are specified in `environment.yml`. Main packages include Python 3.10+, `networkx`, `numpy`, `scipy`, `matplotlib`, `pgmpy`, `pymoo`, and `pulp`.
 
 Experiments that use the exact MaxSAT baseline additionally require MaxHS and IBM CPLEX Optimization Studio.
 
@@ -366,15 +366,13 @@ This project stands on the shoulders of several open-source tools and research w
 
 - **[Glucose](https://www.labri.fr/perso/lsimon/glucose/)** — the improved CDCL solver used by MaxHS for its SAT engine, developed by Gilles Audemard and Laurent Simon.
 
-- **[python-sat / pysat](https://pysathq.github.io/)** — the Python interface for reading/writing CNF and WCNF files, developed by the PySAT team at the University of Helsinki.
-
 - **[NetworkX](https://networkx.org/)** — used for attack graph construction and manipulation.
 
 - **[PyMoo](https://pymoo.org/)** — used for the Genetic Algorithm baseline implementation.
 
 - **[pgmpy](http://pgmpy.org/)** — used for probabilistic modeling in the Belief Propagation component.
 
-- **[PyTorch](https://pytorch.org/)** and **[PyTorch Geometric](https://pytorch-geometric.readthedocs.io/)** — used for the neural BP and GNN-based BP components.
+- **[PuLP](https://coin-or.github.io/pulp/)** — used to formulate and solve the Khouzani MILP baseline with CBC.
 
 - **MulVAL** — the network security analysis framework that provides the attack graph format used by `mulval_graph.py`. See Ou, Xinming, Wayne Fulp, and Ronald Farl. *"A Graph-Based Network Security Model"*, and Ammann, Pam, and Joel. *"Scalable, Graph-Based Network Vulnerability Analysis"*.
 

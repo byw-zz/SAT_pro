@@ -127,8 +127,6 @@ def _run_pipeline(args, bn, values_table, return_stats=False):
         for p, active_p in node_state_by_type.get("P", {}).items():
             p_info = vindex.get(p, {})
             p_loss = p_info.get("P_loss", 0.0)
-            p_benefit = p_info.get("P_benefit", 0.0)
-
             if active_p:
                 e_children = [
                     e for e in children.get(p, [])
@@ -141,32 +139,27 @@ def _run_pipeline(args, bn, values_table, return_stats=False):
                     prob_not_comp *= (1.0 - prob_e)
                 p_comp = 1.0 - prob_not_comp if e_children else 0.0
                 expected_loss = p_comp * p_loss
-                expected_gain = (1 - p_comp) * p_benefit
             else:
                 p_comp = 0.0
                 expected_loss = 0.0
-                expected_gain = 0.0
 
             p_states_printed.append({
                 "name": p,
                 "active": active_p,
                 "P_loss": p_loss,
-                "P_benefit": p_benefit,
                 "P_comp": p_comp,
                 "expected_loss": expected_loss,
-                "expected_gain": expected_gain,
             })
         p_states_printed.sort(key=lambda x: x["expected_loss"], reverse=True)
-        print(f"{'Node':<8} {'Active':<6} {'P_loss':>10} {'P_benefit':>10} {'P_comp':>8} {'ExpLoss':>12} {'ExpGain':>12}")
-        print("-" * 70)
+        print(f"{'Node':<8} {'Active':<6} {'P_loss':>10} {'P_comp':>8} {'ExpLoss':>12}")
+        print("-" * 50)
         for item in p_states_printed:
             print(f"{item['name']:<8} {'T' if item['active'] else 'F':<6} "
-                  f"{item['P_loss']:>10.2f} {item['P_benefit']:>10.2f} "
-                  f"{item['P_comp']:>8.4f} {item['expected_loss']:>12.2f} {item['expected_gain']:>12.2f}")
+                  f"{item['P_loss']:>10.2f} {item['P_comp']:>8.4f} "
+                  f"{item['expected_loss']:>12.2f}")
         total_loss = sum(item["expected_loss"] for item in p_states_printed)
-        total_gain = sum(item["expected_gain"] for item in p_states_printed)
-        print("-" * 70)
-        print(f"{'Total':<8} {'':6} {'':>10} {'':>10} {'':>8} {total_loss:>12.2f} {total_gain:>12.2f}")
+        print("-" * 50)
+        print(f"{'Total':<8} {'':6} {'':>10} {'':>8} {total_loss:>12.2f}")
         print()
 
     obj = compute_objective_from_solution(bn, values_table, node_state, node_state_by_type)
@@ -211,7 +204,6 @@ def run_random(args):
         seed=args.seed,
         fixed_e_probs=FIXED_E_PROBS,
         p_loss_range=(args.p_loss_lo, args.p_loss_hi),
-        p_benefit_range=(args.p_benefit_lo, args.p_benefit_hi),
         c_benefit_range=(args.c_benefit_lo, args.c_benefit_hi),
         d_cost_range=(args.d_cost_lo, args.d_cost_hi),
     )
@@ -240,7 +232,6 @@ def run_structured(args):
         seed=args.seed,
         fixed_e_probs=FIXED_E_PROBS,
         p_loss_range=(args.p_loss_lo, args.p_loss_hi),
-        p_benefit_range=(args.p_benefit_lo, args.p_benefit_hi),
         c_benefit_range=(args.c_benefit_lo, args.c_benefit_hi),
         d_cost_range=(args.d_cost_lo, args.d_cost_hi),
         use_level_scaling=args.use_level_scaling,
@@ -264,7 +255,7 @@ def main():
     )
     parser.add_argument(
         "--sat", choices=["pro", "without_pro"], default="pro",
-        help="SAT conversion type: pro=graph2sat.graph2sat (with P_benefit/noisy-OR), "
+        help="SAT conversion type: pro=graph2sat.graph2sat (with noisy-OR), "
              "without_pro=graph2sat.garaph2sat_without_pro (without)"
     )
     parser.add_argument(
@@ -307,8 +298,6 @@ def main():
 
     parser.add_argument("--p-loss-lo", type=float, default=50, help="P_loss lower bound")
     parser.add_argument("--p-loss-hi", type=float, default=500, help="P_loss upper bound")
-    parser.add_argument("--p-benefit-lo", type=float, default=5, help="P_benefit lower bound")
-    parser.add_argument("--p-benefit-hi", type=float, default=80, help="P_benefit upper bound")
     parser.add_argument("--c-benefit-lo", type=float, default=10, help="C_benefit lower bound")
     parser.add_argument("--c-benefit-hi", type=float, default=50, help="C_benefit upper bound")
     parser.add_argument("--d-cost-lo", type=float, default=50, help="D_cost lower bound")

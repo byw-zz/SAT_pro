@@ -22,7 +22,6 @@ def generate_node_values(
     bn,
     seed=None,
     p_loss_range=(50, 500),
-    p_benefit_range=(5, 80),
     c_benefit_range=(10, 50),
     d_cost_range=(50, 100),
     fixed_e_probs=None,
@@ -56,7 +55,6 @@ def generate_node_values(
             "node": node,
             "type": t,
             "P_loss": None,
-            "P_benefit": None,
             "C_benefit": None,
             "D_cost": None,
             "E_prob": None
@@ -64,7 +62,6 @@ def generate_node_values(
 
         if t == "P":
             row["P_loss"] = random.choice(p_loss_choices)
-            row["P_benefit"] = round(random.uniform(*p_benefit_range), 2)
 
         elif t == "C":
             row["C_benefit"] = random.choice(c_benefit_choices)

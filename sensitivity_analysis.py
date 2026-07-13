@@ -14,9 +14,8 @@ Design (as chosen)
   (C_benefit, P_loss, D_cost, E_prob); the other classes are held fixed.
 * Solver: MaxSAT (MaxHS) re-solves the optimal defense set under each perturbation.
 
-Only parameters that actually enter the objective are perturbed
-(objective = sum C_benefit - sum P(compromise)*P_loss - sum D_cost); P_benefit is
-excluded because it does not affect the objective or the strategy.
+Only parameters that enter the objective are perturbed
+(objective = sum C_benefit - sum P(compromise)*P_loss - sum D_cost).
 
 Metrics per (graph, parameter, scale)
 --------------------------------------
@@ -62,7 +61,7 @@ from comparison.bp_core import (
 from result_analysis.exact_analysis import run_exact_analysis
 
 VAL_RANGES = dict(
-    p_loss_range=(50, 500), p_benefit_range=(5, 80),
+    p_loss_range=(50, 500),
     c_benefit_range=(10, 50), d_cost_range=(50, 100),
 )
 

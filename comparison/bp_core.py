@@ -422,7 +422,6 @@ def run_bp_analysis(bn, values_table, D_state=None, bp_max_iters=50, bp_damping=
 
     total_C_benefit = 0.0
     total_P_expected_loss = 0.0
-    total_P_expected_gain = 0.0
     total_D_cost = 0.0
 
     for c in rem_C:
@@ -434,10 +433,8 @@ def run_bp_analysis(bn, values_table, D_state=None, bp_max_iters=50, bp_damping=
     for p in rem_P:
         row_p = vindex.get(p, {})
         p_loss = row_p.get("P_loss", 0.0) or 0.0
-        p_benefit = row_p.get("P_benefit", 0.0) or 0.0
         p_marg = marginals.get(p, 0.0)
         total_P_expected_loss += p_marg * p_loss
-        total_P_expected_gain += (1.0 - p_marg) * p_benefit
 
     for d, defended in D_state.items():
         if defended:
@@ -450,7 +447,6 @@ def run_bp_analysis(bn, values_table, D_state=None, bp_max_iters=50, bp_damping=
         "objective": objective,
         "C_benefit": total_C_benefit,
         "P_expected_loss": total_P_expected_loss,
-        "P_expected_gain": total_P_expected_gain,
         "D_cost": total_D_cost,
         "P_marginals": dict(marginals),
         "D_state": dict(D_state),

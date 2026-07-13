@@ -57,7 +57,6 @@ def generate_node_values(
     bn,
     seed=None,
     p_loss_range=(50, 500),
-    p_benefit_range=(5, 80),
     c_benefit_range=(10, 50),
     d_cost_range=(50, 100),
     fixed_e_probs=None,
@@ -82,7 +81,6 @@ def generate_node_values(
       - C_benefit: negative correlation with level (normalized log reduction, lower bound from 1-cd_beta_max and floor)
       - D_cost: negative correlation with level (same as C)
       - E_prob: unchanged
-      - P_benefit: unchanged (not level-dependent)
     """
     if seed is not None:
         random.seed(seed)
@@ -125,7 +123,6 @@ def generate_node_values(
             "node": node,
             "type": t,
             "P_loss": None,
-            "P_benefit": None,
             "C_benefit": None,
             "D_cost": None,
             "E_prob": None
@@ -137,7 +134,6 @@ def generate_node_values(
             else:
                 base = random.choice(p_loss_choices)
                 row["P_loss"] = scale_for_PD(base, node)
-            row["P_benefit"] = round(random.uniform(*p_benefit_range), 2)
 
         elif t == "C":
             base = random.choice(c_benefit_choices)
@@ -164,7 +160,7 @@ def generate_node_values(
 
 
 def print_values_table(values_table):
-    headers = ["node", "type", "P_loss", "P_benefit", "C_benefit", "D_cost", "E_prob"]
+    headers = ["node", "type", "P_loss", "C_benefit", "D_cost", "E_prob"]
     col_widths = {h: len(h) for h in headers}
 
     for row in values_table:
