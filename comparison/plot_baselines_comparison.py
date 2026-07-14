@@ -14,6 +14,7 @@ Inputs (under comparison/ unless noted):
   - khouzani_out_{s,r}_{small,large}.json      (Khouzani rows)
   - *_{n}graphs_zenitani.json                  (Zenitani rows, zenitani_vs_stored.py)
   - the four stored datasets                   (GA/MaxSAT rows + summary)
+  - rerun_ga/*_ga_fast.json                    (optimized GA-BP reruns)
 """
 
 import json
@@ -25,16 +26,20 @@ from matplotlib.patches import Patch
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-# (label, khouzani_out, zenitani_out, stored dataset)
+# (label, khouzani_out, zenitani_out, stored dataset, optimized GA rerun)
 DSETS = [
     ("structured\nsmall",  "comparison/khouzani_out_s_small.json",
-     "comparison/structured_12_17_100graphs_zenitani.json", "structured_12_17_100graphs.json"),
+     "comparison/structured_12_17_100graphs_zenitani.json", "structured_12_17_100graphs.json",
+     "rerun_ga/structured_12_17_100graphs_ga_fast.json"),
     ("random\nsmall",      "comparison/khouzani_out_r_small.json",
-     "comparison/random_10_100graphs_zenitani.json", "random_10_100graphs.json"),
+     "comparison/random_10_100graphs_zenitani.json", "random_10_100graphs.json",
+     "rerun_ga/random_10_100graphs_ga_fast.json"),
     ("structured\nmedium", "comparison/khouzani_out_s_large.json",
-     "comparison/structured_151_199_10graphs_zenitani.json", "structured_151_199_10graphs.json"),
+     "comparison/structured_151_199_10graphs_zenitani.json", "structured_151_199_10graphs.json",
+     "rerun_ga/structured_151_199_10graphs_ga_fast.json"),
     ("random\nmedium",     "comparison/khouzani_out_r_large.json",
-     "comparison/random_100_10graphs_zenitani.json", "random_100_10graphs.json"),
+     "comparison/random_100_10graphs_zenitani.json", "random_100_10graphs.json",
+     "rerun_ga/random_100_10graphs_ga_fast.json"),
 ]
 
 INK = "#0b0b0b"; MUTED = "#898781"; SURF = "#fcfcfb"
@@ -59,20 +64,25 @@ def _wtl(rows, akey, bkey, tol_abs=0.5, tol_rel=1e-3):
 
 def load():
     out = []
-    for label, khf, zenf, dsf in DSETS:
+    for label, khf, zenf, dsf, gaf in DSETS:
         ds = json.load(open(os.path.join(ROOT, dsf)))
         s = ds["summary"]
+        ga = json.load(open(os.path.join(ROOT, gaf)))
         khp = os.path.join(ROOT, khf); zenp = os.path.join(ROOT, zenf)
         kh_rows = json.load(open(khp))["rows"] if os.path.exists(khp) else None
         zen_rows = json.load(open(zenp))["rows"] if os.path.exists(zenp) else None
 
         n = len(zen_rows or kh_rows or [])
+        stored_by_id = {row["graph_id"]: row for row in ds["results"]}
+        ga_rows = [{"ga_obj": row["new_ga_objective"],
+                    "maxsat_obj": stored_by_id[row["graph_id"]]["maxsat_objective"]}
+                   for row in ga["results"]]
         kh_v_sat = _wtl(kh_rows, "khouzani_obj", "maxsat_obj") if kh_rows else None
         zen_v_sat = _wtl(zen_rows, "zenitani_obj", "maxsat_obj") if zen_rows else None
-        ga_v_sat = (s.get("num_ga_better", 0), s.get("num_tie", 0), s.get("num_sat_better", 0))
+        ga_v_sat = _wtl(ga_rows, "ga_obj", "maxsat_obj")
 
         t_sat = s.get("avg_maxsat_time_s")
-        t_ga = s.get("avg_bp_time_s")
+        t_ga = ga["summary"].get("avg_new_ga_time_s")
         t_kh = (sum(r["khouzani_milp_ms"] for r in kh_rows) / len(kh_rows) / 1000.0
                 if kh_rows else None)
         t_zen = (sum(r["zenitani_wall_ms"] for r in zen_rows) / len(zen_rows) / 1000.0

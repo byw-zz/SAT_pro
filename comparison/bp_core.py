@@ -460,7 +460,8 @@ class DefenseStrategyProblem(ElementwiseProblem):
     """Defense strategy optimization problem (pymoo interface)"""
 
     def __init__(self, bn, values_table, D_nodes, cache,
-                 bp_max_iters=50, bp_damping=0.5, bp_tol=1e-6):
+                 bp_max_iters=50, bp_damping=0.5, bp_tol=1e-6,
+                 bp_fast=False):
         self.bn = bn
         self.values_table = values_table
         self.D_nodes = list(D_nodes)
@@ -468,6 +469,7 @@ class DefenseStrategyProblem(ElementwiseProblem):
         self.bp_max_iters = bp_max_iters
         self.bp_damping = bp_damping
         self.bp_tol = bp_tol
+        self.bp_fast = bp_fast
         n_var = len(self.D_nodes)
         super().__init__(
             n_var=n_var, n_obj=1, n_ieq_constr=0,
@@ -481,6 +483,7 @@ class DefenseStrategyProblem(ElementwiseProblem):
             self.cache[bits] = run_bp_analysis(
                 self.bn, self.values_table, D_state=D_state,
                 bp_max_iters=self.bp_max_iters, bp_damping=self.bp_damping, bp_tol=self.bp_tol,
+                fast=self.bp_fast,
             )
         result = self.cache[bits]
         out["F"] = [-result["objective"]]
@@ -488,7 +491,7 @@ class DefenseStrategyProblem(ElementwiseProblem):
 
 def find_best_defense_bp(bn, values_table, population_size=100, genmax=50,
                          seed=42, bp_max_iters=50, bp_damping=0.5, bp_tol=1e-6,
-                         top_n=10, return_all=False):
+                         top_n=10, return_all=False, bp_fast=False):
     """
     Search for optimal defense strategy using BP + GA.
 
@@ -508,7 +511,8 @@ def find_best_defense_bp(bn, values_table, population_size=100, genmax=50,
 
     if nD == 0:
         result = run_bp_analysis(bn, values_table, D_state={},
-                                 bp_max_iters=bp_max_iters, bp_damping=bp_damping, bp_tol=bp_tol)
+                                 bp_max_iters=bp_max_iters, bp_damping=bp_damping,
+                                 bp_tol=bp_tol, fast=bp_fast)
         return {
             "best_objective": result["objective"],
             "best_D_state": {},
@@ -523,7 +527,7 @@ def find_best_defense_bp(bn, values_table, population_size=100, genmax=50,
     problem = DefenseStrategyProblem(
         bn=bn, values_table=values_table, D_nodes=D_nodes,
         cache=cache, bp_max_iters=bp_max_iters,
-        bp_damping=bp_damping, bp_tol=bp_tol
+        bp_damping=bp_damping, bp_tol=bp_tol, bp_fast=bp_fast
     )
     algorithm = NSGA2(
         pop_size=population_size,

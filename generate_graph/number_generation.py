@@ -74,6 +74,7 @@ def generate_node_values(
     cd_floor=0.2,
 
     round_scaled_int=True,
+    legacy_rng_compat=False,
 ):
     """
     Generate node values with level-based scaling:
@@ -134,6 +135,10 @@ def generate_node_values(
             else:
                 base = random.choice(p_loss_choices)
                 row["P_loss"] = scale_for_PD(base, node)
+            if legacy_rng_compat:
+                # Keep the pre-removal random stream without restoring the
+                # unused P_benefit field.
+                random.uniform(5, 80)
 
         elif t == "C":
             base = random.choice(c_benefit_choices)

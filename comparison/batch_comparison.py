@@ -24,7 +24,6 @@ from comparison.bp_core import (
     extract_D_state_from_solution,
     compute_objective_bp_style,
 )
-from comparison.khouzani_baseline import find_best_defense_khouzani
 
 
 def _winner(obj_a, name_a, obj_b, name_b, eps=1e-9):
@@ -58,6 +57,7 @@ def generate_structured_graph_with_np_range(args, rng, graph_id):
         p_alpha_max=args.p_alpha_max,
         cd_beta_max=args.cd_beta_max,
         cd_floor=args.cd_floor,
+        legacy_rng_compat=getattr(args, "legacy_rng_compat", False),
     )
     return bn, values_table
 
@@ -73,6 +73,7 @@ def generate_random_graph(args, graph_id):
         bn, seed=args.seed + graph_id, fixed_e_probs=FIXED_E_PROBS,
         p_loss_range=(50, 500),
         c_benefit_range=(10, 50), d_cost_range=(50, 100),
+        legacy_rng_compat=getattr(args, "legacy_rng_compat", False),
     )
     return bn, values_table
 
@@ -167,6 +168,8 @@ def run_single_comparison(bn, values_table, args, graph_id, top_n=10):
     # --- Khouzani MILP interdiction baseline (3rd method) ---
     # Scored with the SAME per-graph evaluator (VE if use_ve else BP) as GA/MaxSAT.
     # big-M dual, single-thread (deterministic), 60s/solve cap; n_budget=10.
+    from comparison.khouzani_baseline import find_best_defense_khouzani
+
     t_kh = time.time()
     kh_result = find_best_defense_khouzani(
         bn, values_table, n_budget=10,

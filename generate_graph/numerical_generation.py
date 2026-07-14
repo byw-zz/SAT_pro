@@ -27,6 +27,7 @@ def generate_node_values(
     fixed_e_probs=None,
     fixed_int_k=5,
     return_fixed_choices=False,
+    legacy_rng_compat=False,
 ):
     """
     Generate value table for nodes in the Bayesian graph.
@@ -62,6 +63,11 @@ def generate_node_values(
 
         if t == "P":
             row["P_loss"] = random.choice(p_loss_choices)
+            if legacy_rng_compat:
+                # Historical datasets sampled P_benefit here.  The parameter no
+                # longer exists, but consuming the same draw preserves every
+                # subsequent C/D/E value for exact experiment replay.
+                random.uniform(5, 80)
 
         elif t == "C":
             row["C_benefit"] = random.choice(c_benefit_choices)
