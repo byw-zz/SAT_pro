@@ -9,7 +9,7 @@ from pathlib import Path
 import numpy as np
 from pymoo.algorithms.moo.nsga2 import NSGA2
 from pymoo.core.problem import ElementwiseProblem
-from pymoo.operators.crossover.pntx import TwoPointCrossover
+from pymoo.operators.crossover.pntx import SinglePointCrossover, TwoPointCrossover
 from pymoo.operators.mutation.bitflip import BitflipMutation
 from pymoo.operators.sampling.rnd import BinaryRandomSampling
 from pymoo.optimize import minimize
@@ -491,7 +491,9 @@ class DefenseStrategyProblem(ElementwiseProblem):
 
 def find_best_defense_bp(bn, values_table, population_size=100, genmax=50,
                          seed=42, bp_max_iters=50, bp_damping=0.5, bp_tol=1e-6,
-                         top_n=10, return_all=False, bp_fast=False):
+                         top_n=10, return_all=False, bp_fast=False,
+                         crossover_kind="two_point", crossover_prob=0.8,
+                         mutation_prob=0.01, mutation_prob_var=None):
     """
     Search for optimal defense strategy using BP + GA.
 
@@ -529,11 +531,19 @@ def find_best_defense_bp(bn, values_table, population_size=100, genmax=50,
         cache=cache, bp_max_iters=bp_max_iters,
         bp_damping=bp_damping, bp_tol=bp_tol, bp_fast=bp_fast
     )
+    if crossover_kind == "single_point":
+        crossover = SinglePointCrossover(prob=crossover_prob)
+    elif crossover_kind == "two_point":
+        crossover = TwoPointCrossover(prob=crossover_prob)
+    else:
+        raise ValueError(f"unsupported crossover_kind: {crossover_kind}")
+
+    mutation = BitflipMutation(prob=mutation_prob, prob_var=mutation_prob_var)
     algorithm = NSGA2(
         pop_size=population_size,
         sampling=BinaryRandomSampling(),
-        crossover=TwoPointCrossover(prob=0.8),
-        mutation=BitflipMutation(prob=0.01),
+        crossover=crossover,
+        mutation=mutation,
         eliminate_duplicates=True
     )
 

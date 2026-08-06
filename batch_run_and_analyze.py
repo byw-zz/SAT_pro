@@ -120,8 +120,16 @@ def run_maxhs(wcnf_path, timeout):
     try:
         result = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout + 10)
         return result.stdout + result.stderr
-    except subprocess.TimeoutExpired:
-        return ""
+    except subprocess.TimeoutExpired as exc:
+        # Preserve MaxHS progress emitted before the wall-clock timeout so
+        # convergence experiments can still use incumbent UB history.
+        stdout = exc.stdout or ""
+        stderr = exc.stderr or ""
+        if isinstance(stdout, bytes):
+            stdout = stdout.decode(errors="replace")
+        if isinstance(stderr, bytes):
+            stderr = stderr.decode(errors="replace")
+        return stdout + stderr
 
 
 def parse_ub_from_log(log_text):

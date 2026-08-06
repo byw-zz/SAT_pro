@@ -128,7 +128,7 @@ def main():
     axA.set_ylim(0, 100)
     axA.set_xticks(x); axA.set_xticklabels(labels, fontsize=9, color=INK)
     axA.tick_params(axis="x", length=0, pad=22)
-    axA.set_ylabel("share of graphs (%)", fontsize=10, color=INK)
+    axA.set_ylabel("percentage (%)", fontsize=10, color=INK)
     axA.set_title("Baseline vs. exact MaxSAT   (win / tie / loss)", fontsize=11, color=INK, pad=8)
     for s_ in ("top", "right", "left"):
         axA.spines[s_].set_visible(False)
