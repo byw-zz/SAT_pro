@@ -13,4 +13,6 @@ __pycache__/
 
 # Run logs
 *.log
+*.txt
+*.pid
 MaxHS
