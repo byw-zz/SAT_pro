@@ -96,8 +96,14 @@ def generate_bn_normal_p_outdegree(
     p_std: float = 0.8,
     p_EP: float = 0.25,
     seed: int | None = None,
+    non_p_max_children: int = 5,
 ):
-    """Generate the existing P/E/C/D DAG with normal P out-degrees."""
+    """Generate a P/E/C/D DAG with normally distributed P out-degrees.
+
+    ``max_children`` is the experimental upper bound for P->E out-degree.
+    ``non_p_max_children`` independently fixes the out-degree bound for E/C/D
+    nodes so a k_max sweep does not also relax the rest of the graph.
+    """
     if seed is not None:
         random.seed(seed)
     if nP < 2:
@@ -106,6 +112,8 @@ def generate_bn_normal_p_outdegree(
         raise ValueError("nC must be at least 2 and nD cannot be negative.")
     if max_children < 2:
         raise ValueError("max_children must be at least 2.")
+    if non_p_max_children < 2:
+        raise ValueError("non_p_max_children must be at least 2.")
     if not 0 <= p_EP <= 1:
         raise ValueError("p_EP must be in [0,1].")
 
@@ -133,7 +141,8 @@ def generate_bn_normal_p_outdegree(
     out_degree = defaultdict(int)
 
     def try_add_edge(u, v):
-        if u == v or (u, v) in edges or out_degree[u] >= max_children:
+        limit = max_children if node_type[u] == "P" else non_p_max_children
+        if u == v or (u, v) in edges or out_degree[u] >= limit:
             return False
         edges.add((u, v))
         out_degree[u] += 1
@@ -174,7 +183,7 @@ def generate_bn_normal_p_outdegree(
         raise RuntimeError("No valid E->P edge could be generated.")
 
     for e in E_nodes:
-        remaining = max_children - out_degree[e]
+        remaining = non_p_max_children - out_degree[e]
         needed = max(2 - out_degree[e], 0)
         candidate_c = C_nodes[:]
         random.shuffle(candidate_c)
@@ -211,12 +220,13 @@ def generate_bn_normal_p_outdegree(
         "E": E_nodes,
         "C": C_nodes,
         "D": D_nodes,
-        "edges": list(edges),
+        "edges": sorted(edges),
         "node_type": node_type,
         "out_degree": dict(out_degree),
         "meta": {
             "generator": "normal_p_outdegree",
             "max_children": max_children,
+            "non_p_max_children": non_p_max_children,
             "p_outdegree": degree_meta,
         },
     }

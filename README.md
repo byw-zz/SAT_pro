@@ -222,6 +222,21 @@ python comparison/batch_comparison.py random \
     --bp-damping 0.2
 ```
 
+### Compare four methods as P out-degree increases
+
+The medium-graph sweep uses truncated-normal P-to-E out-degrees with
+`k_max=5/7/10`, ten graph-specific seeds per case, and a shared Loopy-BP final
+evaluator. MaxHS receives 600 CPU seconds per graph. The command is resumable
+and saves after every method or GA run.
+
+```bash
+python comparison/kmax_medium_comparison.py --resume
+python comparison/plot_kmax_medium_comparison.py
+```
+
+This is a long experiment. Its defaults run five independent GA searches and
+all four methods on every graph.
+
 ### Run scaling experiments
 
 ```bash

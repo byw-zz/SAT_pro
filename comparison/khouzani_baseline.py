@@ -28,6 +28,7 @@ import math
 import sys
 import time
 from collections import defaultdict
+from functools import partial
 from pathlib import Path
 
 import pulp
@@ -37,12 +38,19 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 from comparison.bp_core import compute_objective_bp_style
 
 
-def _get_evaluator(eval_mode):
+def _get_evaluator(eval_mode, bp_max_iters=50, bp_damping=0.5,
+                   bp_tol=1e-6, bp_fast=False):
     """Return the shared objective evaluator; import pgmpy-backed exact lazily."""
     if eval_mode == "exact":
         from result_analysis.exact_analysis import run_exact_analysis
         return run_exact_analysis
-    return compute_objective_bp_style
+    return partial(
+        compute_objective_bp_style,
+        bp_max_iters=bp_max_iters,
+        bp_damping=bp_damping,
+        bp_tol=bp_tol,
+        fast=bp_fast,
+    )
 
 
 _EPS_PROB = 1e-12       # floor for log() of a probability
@@ -329,7 +337,8 @@ def solve_khouzani_rowgen(agraph, budget, threads=1, max_iters=2000, msg=False):
 def find_best_defense_khouzani(bn, values_table, n_budget=20, eval_mode="exact",
                                solver=None, msg=False, return_all=False,
                                milp_time_limit=None, mip_gap=None, threads=1,
-                               method="rowgen"):
+                               method="rowgen", bp_max_iters=50,
+                               bp_damping=0.5, bp_tol=1e-6, bp_fast=False):
     """Run the Khouzani MILP over a budget sweep and pick the defence that is
     best under the shared BP/VE objective.
 
@@ -366,7 +375,13 @@ def find_best_defense_khouzani(bn, values_table, n_budget=20, eval_mode="exact",
     else:
         budgets = [total_cost * k / (n_budget - 1) for k in range(n_budget)]
 
-    evaluator = _get_evaluator(eval_mode)
+    evaluator = _get_evaluator(
+        eval_mode,
+        bp_max_iters=bp_max_iters,
+        bp_damping=bp_damping,
+        bp_tol=bp_tol,
+        bp_fast=bp_fast,
+    )
 
     # big-M dual solver (only built/used when method="bigm")
     bigm_solver = None

@@ -34,6 +34,9 @@ def run_dataset(dataset_json, n_budget=15, limit=None, verify=True, milp_time_li
                 method="rowgen", threads=1):
     d = json.load(open(dataset_json))
     args = SimpleNamespace(**d["args"])
+    # Historical comparison datasets consumed one now-removed P_benefit draw
+    # per P node. Preserve that RNG stream when replaying their numeric values.
+    args.legacy_rng_compat = True
     stored = d["results"]
 
     # replay the exact generation loop from batch_comparison.main
@@ -118,8 +121,8 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("dataset_json")
     ap.add_argument("--n-budget", type=int, default=10)
-    ap.add_argument("--milp-time-limit", type=int, default=10, help="CBC seconds per solve")
-    ap.add_argument("--method", choices=["rowgen", "bigm"], default="rowgen")
+    ap.add_argument("--milp-time-limit", type=int, default=60, help="CBC seconds per solve")
+    ap.add_argument("--method", choices=["rowgen", "bigm"], default="bigm")
     ap.add_argument("--threads", type=int, default=1)
     ap.add_argument("--limit", type=int, default=None)
     ap.add_argument("--out", type=str, default=None)
@@ -139,6 +142,13 @@ def main():
 
     out = a.out or (Path(a.dataset_json).stem + "_khouzani.json")
     json.dump({"dataset": a.dataset_json, "args": vars(args),
+               "khouzani_config": {
+                   "method": a.method,
+                   "n_budget": a.n_budget,
+                   "milp_time_limit": a.milp_time_limit,
+                   "threads": a.threads,
+                   "legacy_rng_compat": args.legacy_rng_compat,
+               },
                "rows": rows, "summary": summ},
               open(out, "w"), ensure_ascii=False, indent=2)
     print(f"\nsaved -> {out}")

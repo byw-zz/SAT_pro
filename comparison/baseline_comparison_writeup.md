@@ -152,7 +152,8 @@ The optimization settings are:
 |---|---|
 | MILP solver | CBC |
 | Threads | 1 |
-| Solution method | Row generation |
+| Solution method | Big-M dual MILP |
+| Per-budget CBC limit | 60 seconds |
 | Defense budgets | 10 uniformly spaced budgets |
 | Budget range | 0 to the total defense cost |
 | Candidate selection | Maximum common utility $U(D)$ |

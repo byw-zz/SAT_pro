@@ -82,16 +82,21 @@ _DEFAULT_MAX_K = None   # cap on Algorithm-1 descent length (max #controls it wi
                         # and dominant-set Algorithm 3 grows the tail past it if needed.
 
 
-def _get_evaluator(eval_mode, bp_fast=False):
+def _get_evaluator(eval_mode, bp_fast=False, bp_max_iters=50,
+                   bp_damping=0.5, bp_tol=1e-6):
     """Return the shared objective evaluator; import pgmpy-backed exact lazily.
     `bp_fast=True` binds the closed-form loopy BP (identical output, faster)."""
     if eval_mode == "exact":
         from result_analysis.exact_analysis import run_exact_analysis
         return run_exact_analysis
-    if bp_fast:
-        from functools import partial
-        return partial(compute_objective_bp_style, fast=True)
-    return compute_objective_bp_style
+    from functools import partial
+    return partial(
+        compute_objective_bp_style,
+        bp_max_iters=bp_max_iters,
+        bp_damping=bp_damping,
+        bp_tol=bp_tol,
+        fast=bp_fast,
+    )
 
 
 class _Scorer:
@@ -290,7 +295,8 @@ def iterative_improvement(front, scorer, n_iter, rng, sample=None):
 def find_best_defense_zenitani(bn, values_table, eval_mode="exact",
                                n_iter=_DEFAULT_N_ITER, sample=_DEFAULT_SAMPLE,
                                max_k=_DEFAULT_MAX_K, seed=42, return_all=False,
-                               bp_fast=False):
+                               bp_fast=False, bp_max_iters=50,
+                               bp_damping=0.5, bp_tol=1e-6):
     """Zenitani monotonic gradient-descent baseline over the D-defense patchset.
 
     Runs Algorithm 1 (one-pass gradient descent) followed by Algorithm 3
@@ -327,7 +333,13 @@ def find_best_defense_zenitani(bn, values_table, eval_mode="exact",
     max_k for that instance.
     """
     t0 = time.time()
-    evaluator = _get_evaluator(eval_mode, bp_fast=bp_fast)
+    evaluator = _get_evaluator(
+        eval_mode,
+        bp_fast=bp_fast,
+        bp_max_iters=bp_max_iters,
+        bp_damping=bp_damping,
+        bp_tol=bp_tol,
+    )
     scorer = _Scorer(bn, values_table, evaluator)
     rng = random.Random(seed)
 
