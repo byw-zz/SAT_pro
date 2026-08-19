@@ -75,9 +75,9 @@ hacl(attacker, admin_ws, tcp, 3389).
 % =============================================================================
 % 5-arity: networkServiceInfo(Host, Software, Protocol, Port, Perm).
 
-networkServiceInfo(web_dmz,  apache,  tcp, 80,   www).
-networkServiceInfo(api_dmz,  nginx,   tcp, 443,  www).
-networkServiceInfo(mail_dmz, postfix, tcp, 25,   root).
+networkServiceInfo(web_dmz,  log4j_webapp, tcp, 80,   www).
+networkServiceInfo(api_dmz,  apache_httpd, tcp, 443,  www).
+networkServiceInfo(mail_dmz, exim,         tcp, 25,   root).
 networkServiceInfo(mail_dmz, imapd,   tcp, 143,  mail).
 networkServiceInfo(dns_dmz,  bind,    udp, 53,   root).
 
@@ -88,41 +88,35 @@ networkServiceInfo(file_srv, samba,   tcp, 445,  root).
 % CRITICAL: to satisfy goal execCode(admin_ws, root),
 % make the exploitable server program run as root:
 networkServiceInfo(admin_ws, rdp,     tcp, 3389, root).
-networkServiceInfo(admin_ws, samba,   tcp, 445,  root).
+networkServiceInfo(admin_ws, windows_smb, tcp, 445, root).
 
 % 4-arity duplicates (harmless; some tooling expects them)
-networkServiceInfo(web_dmz,  apache,  tcp, 80).
-networkServiceInfo(api_dmz,  nginx,   tcp, 443).
-networkServiceInfo(mail_dmz, postfix, tcp, 25).
+networkServiceInfo(web_dmz,  log4j_webapp, tcp, 80).
+networkServiceInfo(api_dmz,  apache_httpd, tcp, 443).
+networkServiceInfo(mail_dmz, exim,         tcp, 25).
 networkServiceInfo(mail_dmz, imapd,   tcp, 143).
 networkServiceInfo(dns_dmz,  bind,    udp, 53).
 networkServiceInfo(edge_gw,  openssh, tcp, 22).
 networkServiceInfo(db_core,  postgres,tcp, 5432).
 networkServiceInfo(file_srv, samba,   tcp, 445).
 networkServiceInfo(admin_ws, rdp,     tcp, 3389).
-networkServiceInfo(admin_ws, samba,   tcp, 445).
+networkServiceInfo(admin_ws, windows_smb, tcp, 445).
 
 % =============================================================================
 % Vulnerabilities
 % =============================================================================
 
 % --- admin_ws: RDP remote exploit -> execCode(admin_ws, root) -----------------
-vulExists(admin_ws, 'CVE-2019-0708', rdp).
-vulExists(admin_ws, 'CVE-2019-0708').
-vulProperty('CVE-2019-0708', remoteExploit, privEscalation).
-vulExists(admin_ws, 'CVE-2019-0708', rdp, remoteExploit, privEscalation).
-
-% --- admin_ws: optional local privesc ----------------------------------------
-vulExists(admin_ws, 'CVE-2021-3156', sudo).
-vulExists(admin_ws, 'CVE-2021-3156').
-vulProperty('CVE-2021-3156', localExploit, privEscalation).
-vulExists(admin_ws, 'CVE-2021-3156', sudo, localExploit, privEscalation).
+vulExists(admin_ws, 'CVE-2019-1181', rdp).
+vulExists(admin_ws, 'CVE-2019-1181').
+vulProperty('CVE-2019-1181', remoteExploit, privEscalation).
+vulExists(admin_ws, 'CVE-2019-1181', rdp, remoteExploit, privEscalation).
 
 % --- admin_ws: SMB remote exploit alternate path -----------------------------
-vulExists(admin_ws, 'CVE-2020-0796', samba).
+vulExists(admin_ws, 'CVE-2020-0796', windows_smb).
 vulExists(admin_ws, 'CVE-2020-0796').
 vulProperty('CVE-2020-0796', remoteExploit, privEscalation).
-vulExists(admin_ws, 'CVE-2020-0796', samba, remoteExploit, privEscalation).
+vulExists(admin_ws, 'CVE-2020-0796', windows_smb, remoteExploit, privEscalation).
 
 % --- edge_gw foothold --------------------------------------------------------
 vulExists(edge_gw, 'CVE-2018-15473', openssh).
@@ -131,15 +125,15 @@ vulProperty('CVE-2018-15473', remoteExploit, privEscalation).
 vulExists(edge_gw, 'CVE-2018-15473', openssh, remoteExploit, privEscalation).
 
 % --- DMZ footholds -----------------------------------------------------------
-vulExists(web_dmz, 'CVE-2021-44228', apache).
+vulExists(web_dmz, 'CVE-2021-44228', log4j_webapp).
 vulExists(web_dmz, 'CVE-2021-44228').
 vulProperty('CVE-2021-44228', remoteExploit, privEscalation).
-vulExists(web_dmz, 'CVE-2021-44228', apache, remoteExploit, privEscalation).
+vulExists(web_dmz, 'CVE-2021-44228', log4j_webapp, remoteExploit, privEscalation).
 
-vulExists(api_dmz, 'CVE-2021-41773', nginx).
+vulExists(api_dmz, 'CVE-2021-41773', apache_httpd).
 vulExists(api_dmz, 'CVE-2021-41773').
 vulProperty('CVE-2021-41773', remoteExploit, privEscalation).
-vulExists(api_dmz, 'CVE-2021-41773', nginx, remoteExploit, privEscalation).
+vulExists(api_dmz, 'CVE-2021-41773', apache_httpd, remoteExploit, privEscalation).
 
 % --- DB/File footholds -------------------------------------------------------
 vulExists(db_core, 'CVE-2019-9193', postgres).
@@ -153,10 +147,10 @@ vulProperty('CVE-2017-7494', remoteExploit, privEscalation).
 vulExists(file_srv, 'CVE-2017-7494', samba, remoteExploit, privEscalation).
 
 % --- mail foothold optional --------------------------------------------------
-vulExists(mail_dmz, 'CVE-2020-8617', postfix).
-vulExists(mail_dmz, 'CVE-2020-8617').
-vulProperty('CVE-2020-8617', remoteExploit, privEscalation).
-vulExists(mail_dmz, 'CVE-2020-8617', postfix, remoteExploit, privEscalation).
+vulExists(mail_dmz, 'CVE-2019-15846', exim).
+vulExists(mail_dmz, 'CVE-2019-15846').
+vulProperty('CVE-2019-15846', remoteExploit, privEscalation).
+vulExists(mail_dmz, 'CVE-2019-15846', exim, remoteExploit, privEscalation).
 
 % =============================================================================
 % Goal

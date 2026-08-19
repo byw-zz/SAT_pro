@@ -14,8 +14,8 @@ P6,"netAccess(api_dmz,tcp,443)"
 E6,RULE 6 (direct network access)
 C3,"hacl(attacker,api_dmz,tcp,443)"
 C4,attackerLocated(attacker)
-C5,"networkServiceInfo(api_dmz,nginx,tcp,443,www)"
-C6,"vulExists(api_dmz,'CVE-2021-41773',nginx,remoteExploit,privEscalation)"
+C5,"networkServiceInfo(api_dmz,apache_httpd,tcp,443,www)"
+C6,"vulExists(api_dmz,'CVE-2021-41773',apache_httpd,remoteExploit,privEscalation)"
 E7,RULE 5 (multi-hop access)
 C7,"hacl(web_dmz,db_core,tcp,5432)"
 P7,"execCode(web_dmz,www)"
@@ -23,8 +23,8 @@ E8,RULE 2 (remote exploit of a server program)
 P8,"netAccess(web_dmz,tcp,80)"
 E9,RULE 6 (direct network access)
 C8,"hacl(attacker,web_dmz,tcp,80)"
-C9,"networkServiceInfo(web_dmz,apache,tcp,80,www)"
-C10,"vulExists(web_dmz,'CVE-2021-44228',apache,remoteExploit,privEscalation)"
+C9,"networkServiceInfo(web_dmz,log4j_webapp,tcp,80,www)"
+C10,"vulExists(web_dmz,'CVE-2021-44228',log4j_webapp,remoteExploit,privEscalation)"
 C11,"networkServiceInfo(db_core,postgres,tcp,5432,postgres)"
 C12,"vulExists(db_core,'CVE-2019-9193',postgres,remoteExploit,privEscalation)"
 E10,RULE 5 (multi-hop access)
@@ -39,7 +39,7 @@ C16,"vulExists(edge_gw,'CVE-2018-15473',openssh,remoteExploit,privEscalation)"
 E13,RULE 6 (direct network access)
 C17,"hacl(attacker,admin_ws,tcp,3389)"
 C18,"networkServiceInfo(admin_ws,rdp,tcp,3389,root)"
-C19,"vulExists(admin_ws,'CVE-2019-0708',rdp,remoteExploit,privEscalation)"
+C19,"vulExists(admin_ws,'CVE-2019-1181',rdp,remoteExploit,privEscalation)"
 E14,RULE 2 (remote exploit of a server program)
 P11,"netAccess(admin_ws,tcp,445)"
 E15,RULE 5 (multi-hop access)
@@ -58,9 +58,9 @@ E20,RULE 2 (remote exploit of a server program)
 P15,"netAccess(mail_dmz,tcp,25)"
 E21,RULE 6 (direct network access)
 C24,"hacl(attacker,mail_dmz,tcp,25)"
-C25,"networkServiceInfo(mail_dmz,postfix,tcp,25,root)"
-C26,"vulExists(mail_dmz,'CVE-2020-8617',postfix,remoteExploit,privEscalation)"
+C25,"networkServiceInfo(mail_dmz,exim,tcp,25,root)"
+C26,"vulExists(mail_dmz,'CVE-2019-15846',exim,remoteExploit,privEscalation)"
 C27,"networkServiceInfo(file_srv,samba,tcp,445,root)"
 C28,"vulExists(file_srv,'CVE-2017-7494',samba,remoteExploit,privEscalation)"
-C29,"networkServiceInfo(admin_ws,samba,tcp,445,root)"
-C30,"vulExists(admin_ws,'CVE-2020-0796',samba,remoteExploit,privEscalation)"
+C29,"networkServiceInfo(admin_ws,windows_smb,tcp,445,root)"
+C30,"vulExists(admin_ws,'CVE-2020-0796',windows_smb,remoteExploit,privEscalation)"
