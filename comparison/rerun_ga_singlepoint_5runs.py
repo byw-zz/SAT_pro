@@ -20,17 +20,53 @@ from comparison.batch_comparison import (
     generate_random_graph,
     generate_structured_graph_with_np_range,
 )
-from comparison.bp_core import find_best_defense_bp
-from comparison.rerun_ga_from_stored import (
-    _close_enough,
-    _defended_list,
-    _defended_state,
-    _evaluate,
-    _top_results,
-)
+from comparison.bp_core import compute_objective_bp_style, find_best_defense_bp
+from result_analysis.exact_analysis import run_exact_analysis
 
 
 SEED_STRIDE = 100_000
+
+
+def _defended_state(nodes, defended):
+    selected = set(defended or [])
+    return {d: d in selected for d in nodes}
+
+
+def _defended_list(state):
+    return sorted(d for d, enabled in state.items() if enabled)
+
+
+def _evaluate(bn, values_table, d_state, use_ve, args, bp_fast):
+    if use_ve:
+        return run_exact_analysis(bn, values_table, D_state=d_state)
+    return compute_objective_bp_style(
+        bn,
+        values_table,
+        d_state,
+        bp_max_iters=args.bp_max_iters,
+        bp_damping=args.bp_damping,
+        bp_tol=args.bp_tol,
+        fast=bp_fast,
+    )
+
+
+def _close_enough(actual, expected):
+    tolerance = max(1e-6, 1e-8 * max(1.0, abs(expected)))
+    return abs(actual - expected) <= tolerance, tolerance
+
+
+def _top_results(items, top_n):
+    return [
+        {
+            "rank": rank,
+            "objective": objective,
+            "defended": _defended_list(d_state),
+            "C_benefit": detail.get("C_benefit", 0.0),
+            "P_expected_loss": detail.get("P_expected_loss", 0.0),
+            "D_cost": detail.get("D_cost", 0.0),
+        }
+        for rank, (objective, d_state, detail) in enumerate(items[:top_n], start=1)
+    ]
 
 
 def _run_seed(base_seed, graph_id, run_index):
@@ -82,8 +118,8 @@ def _summary(rows, n_runs):
         "avg_total_5run_time_s": (
             sum(total_times) / len(total_times) if total_times else None
         ),
-        # Compatibility with plot_baselines_comparison.py. Because quality is
-        # best-of-five, the fair composite-method runtime is the five-run total.
+        # Because quality is best-of-five, the fair composite-method runtime is
+        # the five-run total.
         "avg_new_ga_time_s": (
             sum(total_times) / len(total_times) if total_times else None
         ),

@@ -18,7 +18,6 @@ The project implements the following workflow:
 SAT_pro/
 ├── main.py                         # Main entry point
 ├── batch_run_and_analyze.py        # Batch experiment runner
-├── scaling_visualizer.py           # Scaling and convergence visualization
 ├── replot_convergence.py           # Replot convergence curves
 ├── mulval_graph.py                 # MulVAL attack graph utilities
 ├── visualize.py                    # Graph visualization utilities
@@ -36,12 +35,10 @@ SAT_pro/
 │   └── attackgraph2sat_without_pro.py
 │
 ├── comparison/                     # Method comparison
-│   ├── scale_comparison.py         # Scale-based comparison
 │   ├── batch_comparison.py         # Batch comparison runner
 │   └── bp_core.py                  # BP implementation
 │
 ├── evaluation/                     # Evaluation and visualization
-│   ├── sat_ga_visualization.py     # SAT vs. GA visualization
 │   └── analysis_report.txt         # Analysis report
 │
 ├── result_analysis/                # Result analysis scripts
@@ -239,26 +236,19 @@ all four methods on every graph.
 
 ### Run scaling experiments
 
+The script runs the fixed scale set `0.1, 0.2, 0.5, 0.8, 1.0, 1.2, 1.5, 2.0`.
+
 ```bash
 python batch_run_and_analyze.py \
-    --scales 0.1 0.5 1.0 2.0 \
+    --timeout 60 \
+    --seed 42 \
     --output-dir scaling_results/
 ```
 
 ### Visualize convergence results
 
 ```bash
-python scaling_visualizer.py \
-    --results-dir scaling_results/ \
-    --output scaling_results/
-```
-
-### Generate comparison figures
-
-```bash
-python evaluation/sat_ga_visualization.py \
-    --base comparison/batch_outputs/ \
-    --output evaluation/
+python replot_convergence.py
 ```
 
 ### Process MulVAL attack graph with MaxSAT

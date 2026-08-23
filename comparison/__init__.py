@@ -3,7 +3,6 @@
 Contains:
 - bp_core: Core BP algorithm and GA optimization
 - batch_comparison: Batch comparison across multiple graph instances
-- scale_comparison: Scale comparison
 """
 
 from .bp_core import (
