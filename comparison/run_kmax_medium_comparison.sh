@@ -3,7 +3,7 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
-SATPRO_PYTHON="${SATPRO_PYTHON:-/home/wzz/anaconda3/bin/python}"
+SATPRO_PYTHON="${SATPRO_PYTHON:-python}"
 
 cd "${PROJECT_ROOT}"
 exec "${SATPRO_PYTHON}" comparison/kmax_medium_comparison.py \

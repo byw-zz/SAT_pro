@@ -1,6 +1,6 @@
 # SAT-Based Attack Graph Defense Optimization
 
-This repository provides a research prototype for defense strategy optimization in network attack graphs. It supports exact optimization with MaxSAT, heuristic search with Genetic Algorithms (GA), and approximate inference with Belief Propagation (BP).
+This repository provides a research prototype for defense strategy optimization in network attack graphs. It supports optimization with MaxSAT, heuristic search with Genetic Algorithms (GA), and approximate inference with Belief Propagation (BP).
 
 ## Overview
 
@@ -9,7 +9,7 @@ The project implements the following workflow:
 1. Generate synthetic attack graphs with privilege, exploit, condition, and defense nodes.
 2. Convert attack graphs into Weighted CNF (WCNF) instances.
 3. Solve the resulting MaxSAT problem with MaxHS.
-4. Compare the exact MaxSAT solution against GA- and BP-based baselines.
+4. Compare MaxSAT against the GA-BP, Khouzani, and Zenitani baselines.
 5. Export experiment results and visualization data for further analysis.
 
 ## Project Structure
@@ -35,14 +35,15 @@ SAT_pro/
 │   └── attackgraph2sat_without_pro.py
 │
 ├── comparison/                     # Method comparison
-│   ├── batch_comparison.py         # Batch comparison runner
-│   └── bp_core.py                  # BP implementation
-│
-├── evaluation/                     # Evaluation and visualization
-│   └── analysis_report.txt         # Analysis report
+│   ├── batch_comparison.py         # Baseline dataset generator and runner
+│   ├── rerun_ga_singlepoint_5runs.py
+│   ├── khouzani_vs_stored.py
+│   ├── zenitani_vs_stored.py
+│   ├── kmax_medium_comparison.py
+│   ├── kmax_structured_medium_comparison.py
+│   └── parameter_sensitivity_medium_comparison.py
 │
 ├── result_analysis/                # Result analysis scripts
-├── scaling_results/                # Scaling experiment outputs
 ├── testnet/                        # Test network graphs
 └── environment.yml                 # Python environment specification
 ```
@@ -68,6 +69,11 @@ The main edge types are:
 ## Dependencies
 
 The Python dependencies are specified in `environment.yml`. Main packages include Python 3.10+, `networkx`, `numpy`, `scipy`, `matplotlib`, `pgmpy`, `pymoo`, and `pulp`.
+
+```bash
+conda env create -f environment.yml
+conda activate sat_pro
+```
 
 Experiments that use the exact MaxSAT baseline additionally require MaxHS and IBM CPLEX Optimization Studio.
 
@@ -171,84 +177,151 @@ python main.py -t random --nP 10 --nE 24 --nC 30 --nD 15
 python main.py -t structured --nP 30
 ```
 
-### Run batch comparison on structured graphs
+## Reproducing the Paper Experiments
 
-From the project root directory:
+Run all commands from the project root in the environment defined by
+`environment.yml`. The full experiments are computationally expensive. The
+long-running runners save incremental results and support `--resume`.
+
+This repository distributes the experiment code, but not the precomputed paper
+results. JSON summaries, WCNF instances, solver logs, and plots mentioned below
+are generated locally by the commands and are ignored by Git. Their paths only
+describe where a reproduction run writes its own outputs.
+
+### Experiment 1: Four-method baseline comparison
+
+Generate the four paper datasets. `--legacy-rng-compat` reproduces the numeric
+attribute stream used by the archived paper datasets.
 
 ```bash
 python comparison/batch_comparison.py structured \
-    --num-graphs 10 \
-    --nP-min 151 \
-    --nP-max 199 \
-    --seed 42 \
-    --top-n 10 \
-    --save-result \
-    --result-json structured_151_199_10graphs.json \
-    --bp-max-iters 100 \
-    --bp-damping 0.2
-```
+    --num-graphs 100 --nP-min 12 --nP-max 17 \
+    --seed 42 --maxhs-timeout 120 \
+    --population-size 100 --genmax 50 \
+    --bp-max-iters 100 --bp-damping 0.2 --bp-tol 1e-6 \
+    --top-n 10 --legacy-rng-compat \
+    --output-dir comparison/reproduction/structured-small \
+    --save-result --result-json structured_12_17_100graphs.json
 
-If running inside the `comparison/` directory, use:
-
-```bash
-python batch_comparison.py structured \
-    --num-graphs 10 \
-    --nP-min 151 \
-    --nP-max 199 \
-    --seed 42 \
-    --top-n 10 \
-    --save-result \
-    --result-json structured_151_199_10graphs.json \
-    --bp-max-iters 100 \
-    --bp-damping 0.2
-```
-
-### Run batch comparison on random graphs
-
-```bash
 python comparison/batch_comparison.py random \
-    --num-graphs 100 \
-    --nP 10 \
-    --nE 24 \
-    --nC 30 \
-    --nD 15 \
-    --top-n 10 \
-    --save-result \
-    --result-json random_10_100graphs.json \
-    --bp-max-iters 100 \
-    --bp-damping 0.2
+    --num-graphs 100 --nP 10 --nE 24 --nC 30 --nD 15 \
+    --seed 42 --maxhs-timeout 120 \
+    --population-size 100 --genmax 50 \
+    --bp-max-iters 100 --bp-damping 0.2 --bp-tol 1e-6 \
+    --top-n 10 --legacy-rng-compat \
+    --output-dir comparison/reproduction/random-small \
+    --save-result --result-json random_10_100graphs.json
+
+python comparison/batch_comparison.py structured \
+    --num-graphs 10 --nP-min 151 --nP-max 199 \
+    --seed 42 --maxhs-timeout 120 \
+    --population-size 100 --genmax 50 \
+    --bp-max-iters 100 --bp-damping 0.2 --bp-tol 1e-6 \
+    --top-n 10 --legacy-rng-compat \
+    --output-dir comparison/reproduction/structured-medium \
+    --save-result --result-json structured_151_199_10graphs.json
+
+python comparison/batch_comparison.py random \
+    --num-graphs 10 --nP 100 --nE 240 --nC 300 --nD 150 \
+    --seed 42 --maxhs-timeout 120 \
+    --population-size 100 --genmax 50 \
+    --bp-max-iters 100 --bp-damping 0.2 --bp-tol 1e-6 \
+    --top-n 10 --legacy-rng-compat \
+    --output-dir comparison/reproduction/random-medium \
+    --save-result --result-json random_100_10graphs.json
 ```
 
-### Compare four methods as P out-degree increases
-
-The medium-graph sweep uses truncated-normal P-to-E out-degrees with
-`k_max=5/7/10`, ten graph-specific seeds per case, and a shared Loopy-BP final
-evaluator. MaxHS receives 600 CPU seconds per graph. The command is resumable
-and saves after every method or GA run.
+Run five independent GA searches per graph, then run the Khouzani and Zenitani
+baselines against exactly the stored graphs:
 
 ```bash
-python comparison/kmax_medium_comparison.py --resume
-python comparison/plot_kmax_medium_comparison.py
+bash comparison/run_ga_singlepoint_5runs.sh
+
+python comparison/khouzani_vs_stored.py structured_12_17_100graphs.json \
+    --out comparison/khouzani_out_s_small.json
+python comparison/khouzani_vs_stored.py random_10_100graphs.json \
+    --out comparison/khouzani_out_r_small.json
+python comparison/khouzani_vs_stored.py structured_151_199_10graphs.json \
+    --out comparison/khouzani_out_s_large.json
+python comparison/khouzani_vs_stored.py random_100_10graphs.json \
+    --out comparison/khouzani_out_r_large.json
+
+python comparison/zenitani_vs_stored.py structured_12_17_100graphs.json \
+    --out comparison/structured_12_17_100graphs_zenitani.json
+python comparison/zenitani_vs_stored.py random_10_100graphs.json \
+    --out comparison/random_10_100graphs_zenitani.json
+python comparison/zenitani_vs_stored.py structured_151_199_10graphs.json \
+    --out comparison/structured_151_199_10graphs_zenitani.json
+python comparison/zenitani_vs_stored.py random_100_10graphs.json \
+    --out comparison/random_100_10graphs_zenitani.json
+
+python comparison/plot_baselines_comparison_ga_median.py
 ```
 
-This is a long experiment. Its defaults run five independent GA searches and
-all four methods on every graph.
+The GA stage performs 1,100 searches in total. After a complete local run, the
+plotting command generates `comparison/baselines_comparison_ga_median.pdf` and
+`comparison/baselines_comparison_ga_median.json`; neither file is distributed
+with the repository.
 
-### Run scaling experiments
+### Experiment 2: Local-degree stress test
 
-The script runs the fixed scale set `0.1, 0.2, 0.5, 0.8, 1.0, 1.2, 1.5, 2.0`.
+These resumable runners evaluate MaxSAT, GA-BP, Khouzani, and Zenitani on ten
+random and ten structured medium graphs for each `k_max` in `5, 7, 10`. MaxHS
+receives 600 CPU seconds per graph, and GA is repeated five times.
+
+```bash
+bash comparison/run_kmax_medium_comparison.sh \
+    --output-dir comparison/reproduction/kmax-random \
+    --result-json comparison/reproduction/kmax-random/results.json
+bash comparison/run_kmax_structured_medium_comparison.sh \
+    --output-dir comparison/reproduction/kmax-structured \
+    --result-json comparison/reproduction/kmax-structured/results.json
+python comparison/plot_kmax_medium_comparison.py \
+    --input comparison/reproduction/kmax-random/results.json \
+    --output-prefix comparison/reproduction/kmax-random/comparison
+python comparison/plot_kmax_structured_medium_comparison.py \
+    --input comparison/reproduction/kmax-structured/results.json \
+    --output-prefix comparison/reproduction/kmax-structured/comparison
+```
+
+### Experiment 3: Parameter sensitivity
+
+The frozen protocol perturbs `C_benefit`, `P_loss`, and `D_cost` by
+`+/-10%`, `+/-20%`, and `+/-30%` on ten random and ten structured medium
+graphs. Run the preflight, generation, execution, and summary stages in order:
+
+```bash
+python comparison/parameter_sensitivity_medium_comparison.py \
+    --preflight-only \
+    --output-dir comparison/reproduction/parameter-sensitivity
+python comparison/parameter_sensitivity_medium_comparison.py \
+    --generate-only --resume \
+    --output-dir comparison/reproduction/parameter-sensitivity
+python comparison/parameter_sensitivity_medium_comparison.py \
+    --execute --resume \
+    --output-dir comparison/reproduction/parameter-sensitivity
+python comparison/parameter_sensitivity_medium_comparison.py \
+    --summarize-only --resume \
+    --output-dir comparison/reproduction/parameter-sensitivity
+```
+
+The default execution uses eight workers and writes incremental artifacts under
+`comparison/reproduction/parameter-sensitivity/`.
+
+### Experiment 4: Large-scale convergence
+
+The scaling runner uses the fixed scale set
+`0.1, 0.2, 0.5, 0.8, 1.0, 1.2, 1.5, 2.0`. The 600-second timeout reproduces
+the time horizon used by the paper's large-instance convergence figure.
 
 ```bash
 python batch_run_and_analyze.py \
-    --timeout 60 \
+    --timeout 600 \
     --seed 42 \
-    --output-dir scaling_results/
-```
-
-### Visualize convergence results
-
-```bash
-python replot_convergence.py
+    --output-dir comparison/reproduction/scaling
+python replot_convergence.py \
+    --input comparison/reproduction/scaling/scaling_summary.json \
+    --output-dir comparison/reproduction/scaling
 ```
 
 ### Process MulVAL attack graph with MaxSAT
@@ -310,10 +383,13 @@ python mulval_graph.py \
 | `--result-json` | Output JSON filename |
 | `--bp-max-iters` | Maximum number of BP iterations |
 | `--bp-damping` | BP damping factor |
+| `--legacy-rng-compat` | Reproduce the numeric-value RNG stream used by the paper datasets |
 
-## Output Files
+## Locally Generated Output Files
 
-The project mainly produces two types of outputs.
+Experiment outputs are not included in the repository. Running the commands
+above creates them in the requested output directories. The project mainly
+produces two types of outputs.
 
 ### WCNF files
 
@@ -342,10 +418,10 @@ The evaluation scripts support:
 
 | Method | Role |
 |--------|------|
-| MaxSAT / MaxHS | Exact optimization baseline |
-| Genetic Algorithm | Heuristic optimization baseline |
-| Belief Propagation | Approximate probabilistic inference component |
-| BP + GA | Hybrid approximate baseline |
+| MaxSAT / MaxHS | Exact optimizer for the encoded WCNF objective |
+| GA-BP | Genetic search with BP-based final evaluation |
+| Khouzani | MILP-based defense-selection baseline |
+| Zenitani | Iterative defense-selection baseline |
 
 ## Notes
 

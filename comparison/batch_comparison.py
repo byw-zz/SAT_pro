@@ -35,6 +35,16 @@ def _winner(obj_a, name_a, obj_b, name_b, eps=1e-9):
     return name_a if obj_a > obj_b else name_b
 
 
+def replay_legacy_rng_compat(source_args):
+    """Recover the numeric-value RNG mode recorded by a stored dataset.
+
+    Historical paper datasets predate the explicit metadata field and used the
+    legacy RNG stream, whereas newly generated datasets record the selected
+    mode directly.
+    """
+    return bool(source_args.get("legacy_rng_compat", True))
+
+
 def generate_structured_graph_with_np_range(args, rng, graph_id):
     """Generate structured graph with nP in [nP_min, nP_max]"""
     target_nP = rng.randint(args.nP_min, args.nP_max)
@@ -433,6 +443,11 @@ def main():
     parser.add_argument("--nD", type=int, default=None)
     parser.add_argument("--max-children", type=int, default=5)
     parser.add_argument("--p-ep", type=float, default=0.25)
+    parser.add_argument(
+        "--legacy-rng-compat",
+        action="store_true",
+        help="reproduce the numeric-value RNG stream used by the paper datasets",
+    )
 
     args = parser.parse_args()
 

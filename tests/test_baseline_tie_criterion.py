@@ -1,4 +1,4 @@
-from comparison.batch_comparison import _winner
+from comparison.batch_comparison import _winner, replay_legacy_rng_compat
 from comparison.khouzani_vs_stored import summarize as summarize_khouzani
 from comparison.plot_baselines_comparison_ga_median import _wtl as median_wtl
 from comparison.zenitani_vs_stored import summarize as summarize_zenitani
@@ -28,3 +28,9 @@ def test_raw_baseline_helpers_use_the_same_tolerance():
     ]
     assert summarize_khouzani(kh_rows)["vs_maxsat"]["tie"] == 1
     assert summarize_zenitani(zen_rows)["vs_maxsat"]["tie"] == 1
+
+
+def test_stored_dataset_rng_mode_is_backward_compatible_and_explicit():
+    assert replay_legacy_rng_compat({}) is True
+    assert replay_legacy_rng_compat({"legacy_rng_compat": True}) is True
+    assert replay_legacy_rng_compat({"legacy_rng_compat": False}) is False

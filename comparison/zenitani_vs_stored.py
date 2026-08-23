@@ -25,6 +25,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 from comparison.batch_comparison import (
     generate_structured_graph_with_np_range,
     generate_random_graph,
+    replay_legacy_rng_compat,
 )
 from comparison.zenitani_baseline import find_best_defense_zenitani
 
@@ -49,6 +50,7 @@ def _defended(D_state):
 def run_dataset(dataset_json, n_iter=20, limit=None, verify=True):
     d = json.load(open(dataset_json))
     args = SimpleNamespace(**d["args"])
+    args.legacy_rng_compat = replay_legacy_rng_compat(d["args"])
     stored = d["results"]
 
     rng = random.Random(args.seed)
@@ -166,6 +168,7 @@ def main():
 
     out = a.out or (Path(a.dataset_json).stem + "_zenitani.json")
     json.dump({"dataset": a.dataset_json, "args": vars(args),
+               "legacy_rng_compat": args.legacy_rng_compat,
                "rows": rows, "summary": summ},
               open(out, "w"), ensure_ascii=False, indent=2)
     print(f"\nsaved -> {out}")

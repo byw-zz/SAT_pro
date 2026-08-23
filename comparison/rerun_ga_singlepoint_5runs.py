@@ -19,6 +19,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 from comparison.batch_comparison import (
     generate_random_graph,
     generate_structured_graph_with_np_range,
+    replay_legacy_rng_compat,
 )
 from comparison.bp_core import compute_objective_bp_style, find_best_defense_bp
 from result_analysis.exact_analysis import run_exact_analysis
@@ -159,7 +160,7 @@ def _save(path, source, source_args, config, rows, n_runs):
         "source_dataset": str(source),
         "source_args": source_args,
         "ga_config": config,
-        "legacy_rng_compat": True,
+        "legacy_rng_compat": replay_legacy_rng_compat(source_args),
         "summary": _summary(rows, n_runs),
         "results": rows,
     }
@@ -190,7 +191,7 @@ def main():
 
     source_args = stored_data["args"]
     args = SimpleNamespace(**source_args)
-    args.legacy_rng_compat = True
+    args.legacy_rng_compat = replay_legacy_rng_compat(source_args)
     stored_rows = stored_data["results"]
     config = _config(source_args, args_cli.bp_fast, args_cli.runs)
 

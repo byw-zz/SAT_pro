@@ -22,6 +22,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 from comparison.batch_comparison import (
     generate_structured_graph_with_np_range,
     generate_random_graph,
+    replay_legacy_rng_compat,
 )
 from comparison.khouzani_baseline import find_best_defense_khouzani
 
@@ -34,9 +35,7 @@ def run_dataset(dataset_json, n_budget=15, limit=None, verify=True, milp_time_li
                 method="rowgen", threads=1):
     d = json.load(open(dataset_json))
     args = SimpleNamespace(**d["args"])
-    # Historical comparison datasets consumed one now-removed P_benefit draw
-    # per P node. Preserve that RNG stream when replaying their numeric values.
-    args.legacy_rng_compat = True
+    args.legacy_rng_compat = replay_legacy_rng_compat(d["args"])
     stored = d["results"]
 
     # replay the exact generation loop from batch_comparison.main
