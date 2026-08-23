@@ -36,18 +36,18 @@ WIN   = TEAL       # baseline better (good)
 TIE   = YELLOW     # tie (neutral)
 LOSS  = CORAL      # MaxSAT better (baseline loses)
 C_SAT = TEAL; C_GA = CORAL; C_KH = YELLOW               # methods: MaxSAT / GA / Khouzani
+TIE_ABS_TOL = 1e-9
 
 
-def _wtl(rows, key, tol_abs=0.5, tol_rel=1e-3):
+def _wtl(rows, key, tol_abs=TIE_ABS_TOL):
     """Khouzani win/tie/loss vs rows[*][key] (higher obj = better)."""
     w = t = l = 0
     for r in rows:
         a, b = r["khouzani_obj"], r.get(key)
         if a is None or b is None:
             continue
-        tol = max(tol_abs, tol_rel * abs(b))
-        if a > b + tol: w += 1
-        elif a < b - tol: l += 1
+        if a > b + tol_abs: w += 1
+        elif a < b - tol_abs: l += 1
         else: t += 1
     return w, t, l
 

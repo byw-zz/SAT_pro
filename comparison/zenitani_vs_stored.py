@@ -114,7 +114,7 @@ def run_dataset(dataset_json, n_iter=20, limit=None, verify=True):
     return args, rows
 
 
-def summarize(rows, tol=0.5):
+def summarize(rows, tol=1e-9):
     """Pairwise win/tie/loss of Zenitani vs MaxSAT and vs GA (higher obj = better)."""
     def cmp(a, b):
         if a is None or b is None:
@@ -125,7 +125,14 @@ def summarize(rows, tol=0.5):
             return "loss"
         return "tie"
 
-    out = {"n": len(rows)}
+    out = {
+        "n": len(rows),
+        "comparison": {
+            "tie_rule": "absolute final-objective difference <= 1e-9",
+            "tie_abs": tol,
+            "tie_rel": 0.0,
+        },
+    }
     for other in ("maxsat", "ga"):
         w = t = l = na = 0
         for r in rows:

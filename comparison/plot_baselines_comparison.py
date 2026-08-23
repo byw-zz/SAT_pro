@@ -46,18 +46,18 @@ INK = "#0b0b0b"; MUTED = "#898781"; SURF = "#fcfcfb"
 TEAL = "#299d8f"; YELLOW = "#e9c46a"; CORAL = "#d87659"; VIOLET = "#8a6bbf"
 WIN = TEAL; TIE = YELLOW; LOSS = CORAL
 C_SAT = TEAL; C_GA = CORAL; C_KH = YELLOW; C_ZEN = VIOLET
+TIE_ABS_TOL = 1e-9
 
 
-def _wtl(rows, akey, bkey, tol_abs=0.5, tol_rel=1e-3):
+def _wtl(rows, akey, bkey, tol_abs=TIE_ABS_TOL):
     """baseline(akey) win/tie/loss vs bkey (higher obj = better)."""
     w = t = l = 0
     for r in rows:
         a, b = r.get(akey), r.get(bkey)
         if a is None or b is None:
             continue
-        tol = max(tol_abs, tol_rel * abs(b))
-        if a > b + tol: w += 1
-        elif a < b - tol: l += 1
+        if a > b + tol_abs: w += 1
+        elif a < b - tol_abs: l += 1
         else: t += 1
     return w, t, l
 

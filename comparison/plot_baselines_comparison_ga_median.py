@@ -27,6 +27,7 @@ from matplotlib.patches import Patch
 
 ROOT = Path(__file__).resolve().parent.parent
 EXPECTED_GA_RUNS = 5
+TIE_ABS_TOL = 1e-9
 
 # label, Khouzani results, Zenitani results, stored MaxSAT dataset, five-run GA data
 DSETS = [
@@ -81,7 +82,7 @@ def _read_json(relative_path):
         return json.load(handle)
 
 
-def _wtl(rows, akey, bkey, tol_abs=0.5, tol_rel=1e-3):
+def _wtl(rows, akey, bkey, tol_abs=TIE_ABS_TOL):
     """Return method A win/tie/loss counts; larger objective is better."""
     wins = ties = losses = 0
     for row in rows:
@@ -89,10 +90,9 @@ def _wtl(rows, akey, bkey, tol_abs=0.5, tol_rel=1e-3):
         b = row.get(bkey)
         if a is None or b is None:
             continue
-        tolerance = max(tol_abs, tol_rel * abs(b))
-        if a > b + tolerance:
+        if a > b + tol_abs:
             wins += 1
-        elif a < b - tolerance:
+        elif a < b - tol_abs:
             losses += 1
         else:
             ties += 1
@@ -333,6 +333,11 @@ def save_analysis(data):
             "runs_per_graph": EXPECTED_GA_RUNS,
             "quality": "median objective across five independent runs per graph",
             "time": "median single-run time per graph, then mean across graphs",
+        },
+        "comparison": {
+            "tie_rule": "absolute final-objective difference <= 1e-9",
+            "tie_abs": TIE_ABS_TOL,
+            "tie_rel": 0.0,
         },
         "wtl_order": ["first_method_win", "tie", "first_method_loss"],
         "datasets": data,

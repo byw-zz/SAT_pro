@@ -208,11 +208,11 @@ A comparison is treated as a tie when
 
 $$
 \left|U_{\mathrm{baseline}}-U_{\mathrm{MaxSAT}}\right|
-\leq
-\max\left(0.5,0.001\left|U_{\mathrm{MaxSAT}}\right|\right).
+\leq 10^{-9}.
 $$
 
-Thus, a tie denotes approximately equal evaluated utility and does not
+This fixed absolute tolerance accommodates floating-point roundoff without
+treating substantively different utility values as equal. A tie does not
 necessarily indicate identical defense sets.
 
 ## Defense-Quality Results

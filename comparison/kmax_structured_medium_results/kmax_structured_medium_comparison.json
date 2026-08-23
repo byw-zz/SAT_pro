@@ -92,7 +92,13 @@
       "bp_tol": 1e-06,
       "bp_fast": true
     },
-    "time_boundary": "in-memory graph and values to selected defense output"
+    "time_boundary": "in-memory graph and values to selected defense output",
+    "comparison": {
+      "reference": "maxsat",
+      "tie_rule": "exact equality of final objective values",
+      "tie_abs": 0.0,
+      "tie_rel": 0.0
+    }
   },
   "cases": [
     {
@@ -14130,6 +14136,12 @@
       "tie",
       "baseline_loss"
     ],
+    "comparison": {
+      "reference": "maxsat",
+      "tie_rule": "exact equality of final objective values",
+      "tie_abs": 0.0,
+      "tie_rel": 0.0
+    },
     "cases": [
       {
         "k_max": 5,

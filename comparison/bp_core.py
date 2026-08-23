@@ -453,6 +453,8 @@ def run_bp_analysis(bn, values_table, D_state=None, bp_max_iters=50, bp_damping=
         "forced_zero_C": list(forced_zero_C),
         "_bp_time_ms": infer_time * 1000,
         "_bp_converged": bp_info["converged"],
+        "_bp_iters": bp_info["iters"],
+        "_bp_max_delta": bp_info["max_delta"],
     }
 
 

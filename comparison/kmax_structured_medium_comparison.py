@@ -46,6 +46,12 @@ CASE_SPECS = {
 }
 METHODS = ("maxsat", "ga", "khouzani", "zenitani")
 GA_SEED_STRIDE = 100_000
+COMPARISON_CONFIG = {
+    "reference": "maxsat",
+    "tie_rule": "exact equality of final objective values",
+    "tie_abs": 0.0,
+    "tie_rel": 0.0,
+}
 KHOUZANI_BP_CONFIG = {
     "bp_max_iters": 50,
     "bp_damping": 0.5,
@@ -397,7 +403,8 @@ def _run_zenitani(config, bn, values_table, graph_seed):
     }
 
 
-def _compare(baseline, maxsat, tol_abs=0.5, tol_rel=1e-3):
+def _compare(baseline, maxsat, tol_abs=0.0, tol_rel=0.0):
+    """Compare final objectives; only exact equality is a tie by default."""
     if baseline is None or maxsat is None:
         return None
     tolerance = max(tol_abs, tol_rel * abs(maxsat))
@@ -409,7 +416,11 @@ def _compare(baseline, maxsat, tol_abs=0.5, tol_rel=1e-3):
 
 
 def summarize(payload):
-    summary = {"wtl_order": ["baseline_win", "tie", "baseline_loss"], "cases": []}
+    summary = {
+        "wtl_order": ["baseline_win", "tie", "baseline_loss"],
+        "comparison": dict(COMPARISON_CONFIG),
+        "cases": [],
+    }
     for case in payload.get("cases", []):
         rows = case.get("graphs", [])
         item = {
@@ -509,6 +520,7 @@ def _config(args):
         "ga_seed_formula": "seed + graph_id + run_index * 100000",
         "ga_aggregation": f"median final objective of {args.ga_runs} independent runs",
         "final_evaluator": dict(final_bp),
+        "comparison": dict(COMPARISON_CONFIG),
         "time_boundary": "in-memory graph and values to selected defense output",
     }
 

@@ -1,4 +1,11 @@
-from comparison.kmax_medium_comparison import CASE_SPECS, summarize
+from comparison.kmax_medium_comparison import (
+    CASE_SPECS,
+    _compare as compare_random,
+    summarize,
+)
+from comparison.kmax_structured_medium_comparison import (
+    _compare as compare_structured,
+)
 from generate_graph.normal_outdegree_random_graph import generate_bn_normal_p_outdegree
 
 
@@ -32,6 +39,13 @@ def test_case_specs_define_requested_sweep():
         7: {"p_mean": 4.0, "p_std": 1.2},
         10: {"p_mean": 5.5, "p_std": 1.8},
     }
+
+
+def test_kmax_comparisons_require_exact_objective_equality_for_ties():
+    for compare in (compare_random, compare_structured):
+        assert compare(100.0, 100.0) == "tie"
+        assert compare(100.000000000001, 100.0) == "win"
+        assert compare(99.999999999999, 100.0) == "loss"
 
 
 def test_summary_uses_baseline_viewpoint_against_maxsat():

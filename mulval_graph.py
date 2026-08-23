@@ -600,7 +600,9 @@ specified_p_loss = {
 
 specified_c_benefit = {
     "C11": 10000, "C18": 10000, "C29": 10000,
-    "C5": 6000, "C9": 6000, "C25": 6000,
+    # Edge API remains materially more valuable than a routing rule (200),
+    # while staying below the business-critical internal and mail services.
+    "C5": 2200, "C9": 6000, "C25": 6000,
     "C15": 4000, "C27": 4000,
     "C1": 200, "C2": 200, "C3": 200, "C7": 200, "C8": 200,
     "C13": 200, "C14": 200, "C17": 200, "C20": 200, "C21": 200,
@@ -610,7 +612,9 @@ specified_c_benefit = {
 }
 
 specified_d_cost = {
-    "D1_A": 2500, "D1_B": 2500,
+    # SMB patching is still high-friction versus 300--400 segmentation rules,
+    # but slightly cheaper than the RDP emergency patch.
+    "D1_A": 2500, "D1_B": 2000,
     "D8_Vuln": 2000,
     "D5_Vuln": 1500, "D11": 1200, "D6": 1200, "D7": 1200, "D10": 1200,
     "D2": 1000, "D5_Cfg": 800, "D8_Cfg": 800,
