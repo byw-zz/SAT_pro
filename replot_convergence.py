@@ -12,14 +12,14 @@ import matplotlib.pyplot as plt
 
 
 WCNF_INFO = {
-    0.1: {"vars": 790, "clauses": 2226},
-    0.2: {"vars": 1580, "clauses": 4446},
-    0.5: {"vars": 3950, "clauses": 11094},
-    0.8: {"vars": 6320, "clauses": 18456},
-    1.0: {"vars": 7900, "clauses": 23712},
-    1.2: {"vars": 9480, "clauses": 28892},
-    1.5: {"vars": 11850, "clauses": 36296},
-    2.0: {"vars": 15800, "clauses": 48478},
+    0.1: {"vars": 790, "clauses": 2126},
+    0.2: {"vars": 1580, "clauses": 4246},
+    0.5: {"vars": 3950, "clauses": 10594},
+    0.8: {"vars": 6320, "clauses": 17656},
+    1.0: {"vars": 7900, "clauses": 22712},
+    1.2: {"vars": 9480, "clauses": 27692},
+    1.5: {"vars": 11850, "clauses": 34796},
+    2.0: {"vars": 15800, "clauses": 46478},
 }
 
 # Scales to plot (4 subplots)
@@ -224,11 +224,16 @@ def plot_convergence(results, out_dir):
 
     plt.tight_layout()
 
-    out_path = out_dir / "convergence_objective_v2.png"
-    plt.savefig(out_path, dpi=150, bbox_inches="tight")
+    out_paths = [
+        out_dir / "convergence_objective_v2.png",
+        out_dir / "convergence_objective_v2.pdf",
+    ]
+    for out_path in out_paths:
+        plt.savefig(out_path, dpi=150, bbox_inches="tight")
     plt.close(fig)
 
-    print(f"Convergence curve saved: {out_path}")
+    for out_path in out_paths:
+        print(f"Convergence curve saved: {out_path}")
 
 
 def main():
@@ -242,7 +247,7 @@ def main():
     parser.add_argument(
         "--output-dir",
         default="scaling_results",
-        help="directory for convergence_objective_v2.png",
+        help="directory for convergence_objective_v2.png and .pdf",
     )
     args = parser.parse_args()
 
